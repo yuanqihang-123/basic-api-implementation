@@ -3,6 +3,7 @@ package com.thoughtworks.rslist.api;
 import com.thoughtworks.rslist.dto.RsEvent;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
@@ -13,7 +14,7 @@ import java.util.List;
 public class RsController {
     private List<RsEvent> rsList = getRsList();
 
-    List<RsEvent> getRsList() {
+    public List<RsEvent> getRsList() {
         ArrayList<RsEvent> rsEvents = new ArrayList<>();
         rsEvents.add(new RsEvent("第一条事件", "无分类"));
         rsEvents.add(new RsEvent("第二条事件", "无分类"));
@@ -23,6 +24,13 @@ public class RsController {
 
     @GetMapping("/rs/event/{index}")
     public RsEvent getRsEvent(@PathVariable int index) {
-        return rsList.get(index-1);
+        return rsList.get(index - 1);
     }
+
+    @GetMapping("/rs/event")
+    public List<RsEvent> getRsEventList(@RequestParam int start, @RequestParam int end) {
+        return rsList.subList(start - 1, end);
+    }
+
+
 }
