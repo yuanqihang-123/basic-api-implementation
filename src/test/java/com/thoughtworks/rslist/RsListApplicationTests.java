@@ -66,5 +66,13 @@ class RsListApplicationTests {
                 .andExpect(jsonPath("$",hasSize(4)));
     }
 
+    @Test
+    void updateEventTest() throws Exception {
+        mockMvc.perform(get("/rs/update?eventName=猪肉降价了&keyWord=经济&index=3"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$",hasSize(3)))
+                .andExpect(jsonPath("$[2].eventName",is("猪肉降价了")))
+                .andExpect(jsonPath("$[2].keyWord",is("经济")));
 
+    }
 }

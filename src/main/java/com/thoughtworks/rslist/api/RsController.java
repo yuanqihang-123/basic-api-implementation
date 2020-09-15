@@ -3,6 +3,7 @@ package com.thoughtworks.rslist.api;
 import com.thoughtworks.rslist.dto.RsEvent;
 import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.criteria.CriteriaBuilder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -33,6 +34,18 @@ public class RsController {
     List<RsEvent> putRsEvent(@RequestBody(required = false) RsEvent event) {
         rsList.add(event);
         return rsList;
+    }
+
+    @GetMapping("/rs/update")
+    List<RsEvent> updateEvent(@RequestParam String eventName,@RequestParam String keyWord,@RequestParam Integer index) {
+      RsEvent rsEvent = rsList.get(index-1);
+      if (eventName!=null){
+        rsEvent.setEventName(eventName);
+      }
+      if (keyWord!=null){
+        rsEvent.setKeyWord(keyWord);
+      }
+      return rsList;
     }
 
 }
