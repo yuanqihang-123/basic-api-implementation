@@ -37,9 +37,20 @@ public class RsController {
         return rsList;
     }
 
-    @GetMapping("/rs/update")
-    List<RsEvent> updateEvent(@RequestParam String eventName, @RequestParam String keyWord, @RequestParam Integer index) {
-        RsEvent rsEvent = rsList.get(index - 1);
+//    @GetMapping("/rs/update")
+//    List<RsEvent> updateEvent(@RequestParam String eventName, @RequestParam String keyWord, @RequestParam Integer index) {
+//        RsEvent rsEvent = rsList.get(index - 1);
+//        if (eventName != null) {
+//            rsEvent.setEventName(eventName);
+//        }
+//        if (keyWord != null) {
+//            rsEvent.setKeyWord(keyWord);
+//        }
+//        return rsList;
+//    }
+    @PostMapping("/rs/update")
+    List<RsEvent> updateEvent(@RequestParam String eventName, @RequestParam String keyWord, @RequestParam String index) {
+        RsEvent rsEvent = rsList.get(Integer.parseInt(index) - 1);
         if (eventName != null) {
             rsEvent.setEventName(eventName);
         }

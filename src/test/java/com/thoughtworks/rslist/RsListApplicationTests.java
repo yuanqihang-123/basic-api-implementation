@@ -49,12 +49,12 @@ class RsListApplicationTests {
         mockMvc.perform(get("/rs/event?start=1&end=3"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(3)))
-                .andExpect(jsonPath("$[0].eventName",is("第一条事件")))
-                .andExpect(jsonPath("$[0].keyWord",is("无分类")))
-                .andExpect(jsonPath("$[1].eventName",is("第二条事件")))
-                .andExpect(jsonPath("$[1].keyWord",is("无分类")))
-                .andExpect(jsonPath("$[2].eventName",is("第三条事件")))
-                .andExpect(jsonPath("$[2].keyWord",is("无分类")));
+                .andExpect(jsonPath("$[0].eventName", is("第一条事件")))
+                .andExpect(jsonPath("$[0].keyWord", is("无分类")))
+                .andExpect(jsonPath("$[1].eventName", is("第二条事件")))
+                .andExpect(jsonPath("$[1].keyWord", is("无分类")))
+                .andExpect(jsonPath("$[2].eventName", is("第三条事件")))
+                .andExpect(jsonPath("$[2].keyWord", is("无分类")));
     }
 
     @Test
@@ -63,16 +63,24 @@ class RsListApplicationTests {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"eventName\": \"猪肉涨价了\",\"keyWord\": \"经济\"}"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$",hasSize(4)));
+                .andExpect(jsonPath("$", hasSize(4)));
     }
 
     @Test
     void updateEventTest() throws Exception {
-        mockMvc.perform(get("/rs/update?eventName=猪肉降价了&keyWord=经济&index=3"))
+//        mockMvc.perform(get("/rs/update?eventName=猪肉降价了&keyWord=经济&index=3"))
+//                .andExpect(status().isOk())
+//                .andExpect(jsonPath("$",hasSize(3)))
+//                .andExpect(jsonPath("$[2].eventName",is("猪肉降价了")))
+//                .andExpect(jsonPath("$[2].keyWord",is("经济")));
+        mockMvc.perform(post("/rs/update")
+                .param("eventName", "猪肉降价了")
+                .param("keyWord", "经济")
+                .param("index", "3"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$",hasSize(3)))
-                .andExpect(jsonPath("$[2].eventName",is("猪肉降价了")))
-                .andExpect(jsonPath("$[2].keyWord",is("经济")));
+                .andExpect(jsonPath("$", hasSize(3)))
+                .andExpect(jsonPath("$[2].eventName", is("猪肉降价了")))
+                .andExpect(jsonPath("$[2].keyWord", is("经济")));
 
     }
 
@@ -80,7 +88,7 @@ class RsListApplicationTests {
     void deletEventTest() throws Exception {
         mockMvc.perform(get("/rs/delete/1"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[1].eventName",is("第三条事件")))
-                .andExpect(jsonPath("$[1].keyWord",is("无分类")));
+                .andExpect(jsonPath("$[1].eventName", is("第三条事件")))
+                .andExpect(jsonPath("$[1].keyWord", is("无分类")));
     }
 }
