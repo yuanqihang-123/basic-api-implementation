@@ -18,7 +18,7 @@ class RsListApplicationTests {
     MockMvc mockMvc;
 
     @Test
-    void getAllRsEventTest() throws Exception {
+    void contextLoads() throws Exception {
         mockMvc.perform(get("/rs/list"))
                 .andExpect(status().isOk())
                 .andExpect(content().string("[第一条事件, 第二条事件, 第三条事件]"));
