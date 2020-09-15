@@ -25,6 +25,7 @@ public class RsController {
         return rsList.get(index - 1);
     }
 
+
     @GetMapping("/rs/event")
     public List<RsEvent> getRsEventList(@RequestParam int start, @RequestParam int end) {
         return rsList.subList(start - 1, end);
@@ -37,15 +38,20 @@ public class RsController {
     }
 
     @GetMapping("/rs/update")
-    List<RsEvent> updateEvent(@RequestParam String eventName,@RequestParam String keyWord,@RequestParam Integer index) {
-      RsEvent rsEvent = rsList.get(index-1);
-      if (eventName!=null){
-        rsEvent.setEventName(eventName);
-      }
-      if (keyWord!=null){
-        rsEvent.setKeyWord(keyWord);
-      }
-      return rsList;
+    List<RsEvent> updateEvent(@RequestParam String eventName, @RequestParam String keyWord, @RequestParam Integer index) {
+        RsEvent rsEvent = rsList.get(index - 1);
+        if (eventName != null) {
+            rsEvent.setEventName(eventName);
+        }
+        if (keyWord != null) {
+            rsEvent.setKeyWord(keyWord);
+        }
+        return rsList;
     }
 
+    @GetMapping("/rs/delete/{index}")
+    public List<RsEvent> deleteEvent(@PathVariable int index) {
+        rsList.remove(index - 1);
+        return rsList;
+    }
 }

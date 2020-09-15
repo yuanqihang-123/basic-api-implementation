@@ -75,4 +75,12 @@ class RsListApplicationTests {
                 .andExpect(jsonPath("$[2].keyWord",is("经济")));
 
     }
+
+    @Test
+    void deletEventTest() throws Exception {
+        mockMvc.perform(get("/rs/delete/1"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[1].eventName",is("第三条事件")))
+                .andExpect(jsonPath("$[1].keyWord",is("无分类")));
+    }
 }
