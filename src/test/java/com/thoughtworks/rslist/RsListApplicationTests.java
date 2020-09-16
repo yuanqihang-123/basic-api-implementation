@@ -3,6 +3,7 @@ package com.thoughtworks.rslist;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.thoughtworks.rslist.api.RsController;
 import com.thoughtworks.rslist.dto.RsEvent;
+import com.thoughtworks.rslist.dto.User;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -32,7 +33,6 @@ class RsListApplicationTests {
 //    {"eventName":"第一条事件","keyWord":"无分类"}
         mockMvc.perform(get("/rsEvent/1"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()").value(2))
                 .andExpect(jsonPath("$.eventName").value("第一条事件"));
     }
 
@@ -50,8 +50,9 @@ class RsListApplicationTests {
     }
 
     @Test
-    void putRsEventTest() throws Exception {
-        RsEvent rsEvent = new RsEvent("猪肉涨价了", "经济");
+    void addRsEventTest() throws Exception {
+        User user = new User("zhangsan","male",20,"zs@tw.com","11234567890");
+        RsEvent rsEvent = new RsEvent("猪肉涨价了", "经济",user);
         ObjectMapper objectMapper = new ObjectMapper();
         String json = objectMapper.writeValueAsString(rsEvent);
 
@@ -59,7 +60,9 @@ class RsListApplicationTests {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(json))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(4)));
+                .andExpect(jsonPath("$", hasSize(4)))
+                .andExpect(jsonPath("$[3].eventName",is("猪肉涨价了")))
+                .andExpect(jsonPath("$[3].keyWord",is("经济")));
     }
 
     @Test
@@ -84,4 +87,6 @@ class RsListApplicationTests {
                 .andExpect(jsonPath("$[1].eventName", is("第三条事件")))
                 .andExpect(jsonPath("$[1].keyWord", is("无分类")));
     }
+
+
 }
