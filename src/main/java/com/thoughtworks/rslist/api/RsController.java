@@ -2,7 +2,6 @@ package com.thoughtworks.rslist.api;
 
 import com.thoughtworks.rslist.dto.RsEvent;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,17 +36,6 @@ public class RsController {
         return rsList;
     }
 
-    //    @GetMapping("/rs/update")
-//    List<RsEvent> updateEvent(@RequestParam String eventName, @RequestParam String keyWord, @RequestParam Integer index) {
-//        RsEvent rsEvent = rsList.get(index - 1);
-//        if (eventName != null) {
-//            rsEvent.setEventName(eventName);
-//        }
-//        if (keyWord != null) {
-//            rsEvent.setKeyWord(keyWord);
-//        }
-//        return rsList;
-//    }
     @PutMapping("/rsEvent/{index}")
     List<RsEvent> updateRsEvent(@RequestBody RsEvent rsEvent, @PathVariable Integer index) {
         RsEvent event = rsList.get(index - 1);
