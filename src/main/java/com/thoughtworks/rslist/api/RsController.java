@@ -20,19 +20,19 @@ public class RsController {
     }
 
 
-    @GetMapping("/rs/event/{index}")
+    @GetMapping("/rsEvent/{index}")
     public RsEvent getRsEvent(@PathVariable int index) {
         return rsList.get(index - 1);
     }
 
 
-    @GetMapping("/rs/event")
-    public List<RsEvent> getRsEventList(@RequestParam int start, @RequestParam int end) {
+    @GetMapping("/rsEvents")
+    public List<RsEvent> getRsEvents(@RequestParam int start, @RequestParam int end) {
         return rsList.subList(start - 1, end);
     }
 
-    @PostMapping("/rs/put")
-    List<RsEvent> putRsEvent(@RequestBody(required = false) RsEvent event) {
+    @PostMapping("/rsEvent")
+    List<RsEvent> addRsEvent(@RequestBody(required = false) RsEvent event) {
         rsList.add(event);
         return rsList;
     }
@@ -48,19 +48,19 @@ public class RsController {
 //        }
 //        return rsList;
 //    }
-    @PostMapping("/rs/update")
-    List<RsEvent> updateEvent(@RequestParam String eventName, @RequestParam String keyWord, @RequestParam String index) {
-        RsEvent rsEvent = rsList.get(Integer.parseInt(index) - 1);
-        if (eventName != null) {
-            rsEvent.setEventName(eventName);
+    @PutMapping("/rsEvent/{index}")
+    List<RsEvent> updateRsEvent(@RequestBody RsEvent rsEvent, @PathVariable Integer index) {
+        RsEvent event = rsList.get(index - 1);
+        if (rsEvent.getEventName() != null) {
+            event.setEventName(rsEvent.getEventName());
         }
-        if (keyWord != null) {
-            rsEvent.setKeyWord(keyWord);
+        if (rsEvent.getKeyWord() != null) {
+            event.setKeyWord(rsEvent.getKeyWord());
         }
         return rsList;
     }
 
-    @GetMapping("/rs/delete/{index}")
+    @DeleteMapping("/rsEvent/{index}")
     public List<RsEvent> deleteEvent(@PathVariable int index) {
         rsList.remove(index - 1);
         return rsList;
