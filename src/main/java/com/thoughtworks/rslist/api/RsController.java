@@ -50,7 +50,7 @@ public class RsController {
             userList.add(newUser);
         }
         rsList.add(event);
-        return  ResponseEntity.status(201).header("index","").body(rsList);
+        return  ResponseEntity.status(201).header("index",""+rsList.indexOf(event)).body(rsList);
     }
 
     @PutMapping("/rsEvent/{index}")

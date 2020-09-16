@@ -2,6 +2,8 @@ package com.thoughtworks.rslist.api;
 
 import com.thoughtworks.rslist.dto.RsEvent;
 import com.thoughtworks.rslist.dto.User;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
@@ -25,5 +27,10 @@ public class UserController {
 
     public void setUserList(List<User> userList) {
         this.userList = userList;
+    }
+
+    @GetMapping("/users")
+    public ResponseEntity<List<User>> getUsers(){
+        return ResponseEntity.ok(userList);
     }
 }
