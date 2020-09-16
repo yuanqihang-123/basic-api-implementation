@@ -66,4 +66,19 @@ public class UserControllerTest {
                 .content(json))
                 .andExpect(status().isOk());
     }
+
+    @Test
+    void add_rs_event_and_gender_not_empty_test() throws Exception {
+        User user = new User("zhangsan","",20,"zs@tw.com","11234567890");
+        RsEvent rsEvent = new RsEvent("猪肉涨价了", "经济",user);
+        ObjectMapper objectMapper = new ObjectMapper();
+        String json = objectMapper.writeValueAsString(rsEvent);
+
+        mockMvc.perform(post("/rsEvent")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(json))
+                .andExpect(status().isBadRequest());
+    }
+
+
 }
