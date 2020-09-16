@@ -37,7 +37,7 @@ class RsListApplicationTests {
         mockMvc.perform(get("/rsEvent/1"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.eventName").value("第一条事件"))
-                .andExpect(jsonPath("$",not(hasKey("user"))));
+                .andExpect(jsonPath("$", not(hasKey("user"))));
     }
 
     @Test
@@ -67,10 +67,10 @@ class RsListApplicationTests {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(json))
                 .andExpect(status().isCreated())
-                .andExpect(header().string("index","3"))
+                .andExpect(header().string("index", "3"))
                 .andExpect(jsonPath("$", hasSize(4)))
-                .andExpect(jsonPath("$[3].eventName",is("猪肉涨价了")))
-                .andExpect(jsonPath("$[3].keyWord",is("经济")));
+                .andExpect(jsonPath("$[3].eventName", is("猪肉涨价了")))
+                .andExpect(jsonPath("$[3].keyWord", is("经济")));
     }
 
     @Test
@@ -100,14 +100,26 @@ class RsListApplicationTests {
     void getEventsStartAndEndTest() throws Exception {
         mockMvc.perform(get("/rsEvents?start=0&end=4"))
                 .andExpect(status().is(400))
-                .andExpect(jsonPath("$.error",is("invalid request param")));
+                .andExpect(jsonPath("$.error", is("invalid request param")));
     }
 
- @Test
+    @Test
     void getEventIndexTest() throws Exception {
         mockMvc.perform(get("/rsEvent/4"))
                 .andExpect(status().is(400))
-                .andExpect(jsonPath("$.error",is("invalid index")));
+                .andExpect(jsonPath("$.error", is("invalid index")));
+    }
+
+    @Test
+    void addEventValidTest() throws Exception {
+        RsEvent rsEvent = new RsEvent("", "经济");
+        ObjectMapper objectMapper = new ObjectMapper();
+        String json = objectMapper.writeValueAsString(rsEvent);
+        mockMvc.perform(post("/rsEvent")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(json))
+                .andExpect(status().is(400))
+                .andExpect(jsonPath("$.error", is("invalid param")));
     }
 
 
