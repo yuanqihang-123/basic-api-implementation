@@ -36,8 +36,8 @@ public class UserControllerTest {
 
     @Test
     void add_rs_event_and_userName_not_empty_test() throws Exception {
-        User user = new User("","male",20,"zs@tw.com","11234567890");
-        RsEvent rsEvent = new RsEvent("猪肉涨价了", "经济",user);
+        User user = new User("", "male", 20, "zs@tw.com", "11234567890");
+        RsEvent rsEvent = new RsEvent("猪肉涨价了", "经济", user);
         ObjectMapper objectMapper = new ObjectMapper();
         String json = objectMapper.writeValueAsString(rsEvent);
 
@@ -49,8 +49,8 @@ public class UserControllerTest {
 
     @Test
     void add_rs_event_and_userName_not_more_than_8_test() throws Exception {
-        User user = new User("123456789","male",20,"zs@tw.com","11234567890");
-        RsEvent rsEvent = new RsEvent("猪肉涨价了", "经济",user);
+        User user = new User("123456789", "male", 20, "zs@tw.com", "11234567890");
+        RsEvent rsEvent = new RsEvent("猪肉涨价了", "经济", user);
         ObjectMapper objectMapper = new ObjectMapper();
         String json = objectMapper.writeValueAsString(rsEvent);
 
@@ -59,7 +59,6 @@ public class UserControllerTest {
                 .content(json))
                 .andExpect(status().isBadRequest());
     }
-
 
 
     @Test
@@ -78,8 +77,8 @@ public class UserControllerTest {
 
     @Test
     void add_rs_event_and_gender_not_empty_test() throws Exception {
-        User user = new User("zhangsan","",20,"zs@tw.com","11234567890");
-        RsEvent rsEvent = new RsEvent("猪肉涨价了", "经济",user);
+        User user = new User("zhangsan", "", 20, "zs@tw.com", "11234567890");
+        RsEvent rsEvent = new RsEvent("猪肉涨价了", "经济", user);
         ObjectMapper objectMapper = new ObjectMapper();
         String json = objectMapper.writeValueAsString(rsEvent);
 
@@ -89,13 +88,13 @@ public class UserControllerTest {
                 .andExpect(status().isBadRequest());
     }
 
-@Test
+    @Test
     void add_rs_event_and_gender_is_valid_test() throws Exception {
 //        User user = new User("zhangsan","male",20,"zs@tw.com","11234567890");
 //        RsEvent rsEvent = new RsEvent("猪肉涨价了", "经济",user);
 //        ObjectMapper objectMapper = new ObjectMapper();
 //        String json = objectMapper.writeValueAsString(rsEvent);
-    String json = "{\"eventName\":\"猪肉涨价了\",\"keyWord\":\"经济\",\"user\":{\"user_name\":\"zhangsan\",\"user_gender\":\"male\",\"user_age\":20,\"user_email\":\"zs@tw.com\",\"user_phone\":\"11234567890\"}}";
+        String json = "{\"eventName\":\"猪肉涨价了\",\"keyWord\":\"经济\",\"user\":{\"user_name\":\"zhangsan\",\"user_gender\":\"male\",\"user_age\":20,\"user_email\":\"zs@tw.com\",\"user_phone\":\"11234567890\"}}";
 
         mockMvc.perform(post("/rsEvent")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -105,8 +104,8 @@ public class UserControllerTest {
 
     @Test
     void add_rs_event_and_age_less_than_18_test() throws Exception {
-        User user = new User("zhangsan","male",17,"zs@tw.com","11234567890");
-        RsEvent rsEvent = new RsEvent("猪肉涨价了", "经济",user);
+        User user = new User("zhangsan", "male", 17, "zs@tw.com", "11234567890");
+        RsEvent rsEvent = new RsEvent("猪肉涨价了", "经济", user);
         ObjectMapper objectMapper = new ObjectMapper();
         String json = objectMapper.writeValueAsString(rsEvent);
 
@@ -116,10 +115,10 @@ public class UserControllerTest {
                 .andExpect(status().isBadRequest());
     }
 
-@Test
+    @Test
     void add_rs_event_and_age_max_than_100_test() throws Exception {
-        User user = new User("zhangsan","male",101,"zs@tw.com","11234567890");
-        RsEvent rsEvent = new RsEvent("猪肉涨价了", "经济",user);
+        User user = new User("zhangsan", "male", 101, "zs@tw.com", "11234567890");
+        RsEvent rsEvent = new RsEvent("猪肉涨价了", "经济", user);
         ObjectMapper objectMapper = new ObjectMapper();
         String json = objectMapper.writeValueAsString(rsEvent);
 
@@ -129,10 +128,10 @@ public class UserControllerTest {
                 .andExpect(status().isBadRequest());
     }
 
-@Test
+    @Test
     void add_rs_event_and_age_not_empty_test() throws Exception {
-        User user = new User("zhangsan","male",null,"zs@tw.com","11234567890");
-        RsEvent rsEvent = new RsEvent("猪肉涨价了", "经济",user);
+        User user = new User("zhangsan", "male", null, "zs@tw.com", "11234567890");
+        RsEvent rsEvent = new RsEvent("猪肉涨价了", "经济", user);
         ObjectMapper objectMapper = new ObjectMapper();
         String json = objectMapper.writeValueAsString(rsEvent);
 
@@ -142,26 +141,26 @@ public class UserControllerTest {
                 .andExpect(status().isBadRequest());
     }
 
-@Test
+    @Test
     void add_rs_event_and_age_is_valide_test() throws Exception {
 //        User user = new User("zhangsan","male",30,"zs@tw.com","11234567890");
 //        RsEvent rsEvent = new RsEvent("猪肉涨价了", "经济",user);
 //        ObjectMapper objectMapper = new ObjectMapper();
 //        String json = objectMapper.writeValueAsString(rsEvent);
-    String json = "{\"eventName\":\"猪肉涨价了\",\"keyWord\":\"经济\",\"user\":{\"user_name\":\"zhangsan\",\"user_gender\":\"male\",\"user_age\":20,\"user_email\":\"zs@tw.com\",\"user_phone\":\"11234567890\"}}";
+        String json = "{\"eventName\":\"猪肉涨价了\",\"keyWord\":\"经济\",\"user\":{\"user_name\":\"zhangsan\",\"user_gender\":\"male\",\"user_age\":20,\"user_email\":\"zs@tw.com\",\"user_phone\":\"11234567890\"}}";
         mockMvc.perform(post("/rsEvent")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(json))
                 .andExpect(status().isCreated());
     }
 
-@Test
+    @Test
     void add_rs_event_and_email_is_valide_test() throws Exception {
 //        User user = new User("zhangsan","male",30,"zs@tw.com","11234567890");
 //        RsEvent rsEvent = new RsEvent("猪肉涨价了", "经济",user);
 //        ObjectMapper objectMapper = new ObjectMapper();
 //        String json = objectMapper.writeValueAsString(rsEvent);
-    String json = "{\"eventName\":\"猪肉涨价了\",\"keyWord\":\"经济\",\"user\":{\"user_name\":\"zhangsan\",\"user_gender\":\"male\",\"user_age\":20,\"user_email\":\"zs@tw.com\",\"user_phone\":\"11234567890\"}}";
+        String json = "{\"eventName\":\"猪肉涨价了\",\"keyWord\":\"经济\",\"user\":{\"user_name\":\"zhangsan\",\"user_gender\":\"male\",\"user_age\":20,\"user_email\":\"zs@tw.com\",\"user_phone\":\"11234567890\"}}";
 
         mockMvc.perform(post("/rsEvent")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -169,10 +168,10 @@ public class UserControllerTest {
                 .andExpect(status().isCreated());
     }
 
-@Test
+    @Test
     void add_rs_event_and_email_not_valid_test() throws Exception {
-        User user = new User("zhangsan","male",30,"zstw.com","11234567890");
-        RsEvent rsEvent = new RsEvent("猪肉涨价了", "经济",user);
+        User user = new User("zhangsan", "male", 30, "zstw.com", "11234567890");
+        RsEvent rsEvent = new RsEvent("猪肉涨价了", "经济", user);
         ObjectMapper objectMapper = new ObjectMapper();
         String json = objectMapper.writeValueAsString(rsEvent);
 
@@ -182,10 +181,10 @@ public class UserControllerTest {
                 .andExpect(status().isBadRequest());
     }
 
-@Test
+    @Test
     void add_rs_event_and_photo_not_start_with_1_test() throws Exception {
-        User user = new User("zhangsan","male",30,"zs@tw.com","21234567890");
-        RsEvent rsEvent = new RsEvent("猪肉涨价了", "经济",user);
+        User user = new User("zhangsan", "male", 30, "zs@tw.com", "21234567890");
+        RsEvent rsEvent = new RsEvent("猪肉涨价了", "经济", user);
         ObjectMapper objectMapper = new ObjectMapper();
         String json = objectMapper.writeValueAsString(rsEvent);
 
@@ -195,10 +194,10 @@ public class UserControllerTest {
                 .andExpect(status().isBadRequest());
     }
 
-@Test
+    @Test
     void add_rs_event_and_photo_not_11_numbers_test() throws Exception {
-        User user = new User("zhangsan","male",30,"zs@tw.com","1123456789");
-        RsEvent rsEvent = new RsEvent("猪肉涨价了", "经济",user);
+        User user = new User("zhangsan", "male", 30, "zs@tw.com", "1123456789");
+        RsEvent rsEvent = new RsEvent("猪肉涨价了", "经济", user);
         ObjectMapper objectMapper = new ObjectMapper();
         String json = objectMapper.writeValueAsString(rsEvent);
 
@@ -208,14 +207,14 @@ public class UserControllerTest {
                 .andExpect(status().isBadRequest());
     }
 
-@Test
+    @Test
     void add_rs_event_and_photo_is_valid_test() throws Exception {
 //        User user = new User("zhangsan","male",30,"zs@tw.com","11234567890");
 //        RsEvent rsEvent = new RsEvent("猪肉涨价了", "经济",user);
 //        ObjectMapper objectMapper = new ObjectMapper();
 //        String json = objectMapper.writeValueAsString(rsEvent);
 
-    String json = "{\"eventName\":\"猪肉涨价了\",\"keyWord\":\"经济\",\"user\":{\"user_name\":\"zhangsan\",\"user_gender\":\"male\",\"user_age\":20,\"user_email\":\"zs@tw.com\",\"user_phone\":\"11234567890\"}}";
+        String json = "{\"eventName\":\"猪肉涨价了\",\"keyWord\":\"经济\",\"user\":{\"user_name\":\"zhangsan\",\"user_gender\":\"male\",\"user_age\":20,\"user_email\":\"zs@tw.com\",\"user_phone\":\"11234567890\"}}";
         mockMvc.perform(post("/rsEvent")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(json))
@@ -236,12 +235,24 @@ public class UserControllerTest {
 //                .andExpect(jsonPath("$[3].user.user_name",is("zhangsan")));
     }
 
-@Test
+    @Test
     void get_all_user_test() throws Exception {
         mockMvc.perform(get("/users"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0]",is(hasKey("user_name"))));
+                .andExpect(jsonPath("$[0]", is(hasKey("user_name"))));
     }
+
+//    @Test
+//    void add_user_when_data_not_valid_test() throws Exception {
+//        User user = new User();
+//        ObjectMapper objectMapper = new ObjectMapper();
+//        String json = objectMapper.writeValueAsString(user);
+//        mockMvc.perform(post("/user")
+//                .contentType(MediaType.APPLICATION_JSON)
+//                .content(json))
+//                .andExpect(status().is(400))
+//                .andExpect(jsonPath("$.error", is("invalid user")));
+//    }
 
 
 }
