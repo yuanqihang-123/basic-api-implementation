@@ -96,5 +96,12 @@ class RsListApplicationTests {
                 .andExpect(jsonPath("$[1].keyWord", is("无分类")));
     }
 
+    @Test
+    void getEventsStartAndEndTest() throws Exception {
+        mockMvc.perform(get("/rsEvents?start=0&end=4"))
+                .andExpect(status().is(400))
+                .andExpect(jsonPath("$.error",is("invalid request param")));
+    }
+
 
 }

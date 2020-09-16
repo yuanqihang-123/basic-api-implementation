@@ -2,6 +2,7 @@ package com.thoughtworks.rslist.api;
 
 import com.thoughtworks.rslist.dto.RsEvent;
 import com.thoughtworks.rslist.dto.User;
+import com.thoughtworks.rslist.exception.InvalidIndexException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -37,7 +38,7 @@ public class RsController {
 
 
     @GetMapping("/rsEvents")
-    public ResponseEntity<List<RsEvent>> getRsEvents(@RequestParam int start, @RequestParam int end) {
+    public ResponseEntity<List<RsEvent>> getRsEvents(@RequestParam int start, @RequestParam int end) throws InvalidIndexException {
         return ResponseEntity.ok(rsList.subList(start - 1, end));
     }
 
