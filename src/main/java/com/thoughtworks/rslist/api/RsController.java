@@ -1,13 +1,9 @@
 package com.thoughtworks.rslist.api;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
 import com.thoughtworks.rslist.dto.RsEvent;
 import org.springframework.web.bind.annotation.*;
 
-import javax.persistence.criteria.CriteriaBuilder;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 @RestController
@@ -21,12 +17,6 @@ public class RsController {
         rsEvents.add(new RsEvent("第二条事件", "无分类"));
         rsEvents.add(new RsEvent("第三条事件", "无分类"));
         return rsEvents;
-    }
-
-
-    @GetMapping("/rs/list")
-    public String getAllRsEvent() {
-        return rsList.toString();
     }
 
 
