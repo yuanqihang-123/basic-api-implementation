@@ -1,14 +1,22 @@
 package com.thoughtworks.rslist.api;
 
 import com.thoughtworks.rslist.dto.RsEvent;
+import com.thoughtworks.rslist.dto.User;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 public class RsController {
+    @Autowired
+    UserController userController;
 
     private List<RsEvent> rsList = getRsList();
 
@@ -34,7 +42,12 @@ public class RsController {
 
     @PostMapping("/rsEvent")
     List<RsEvent> addRsEvent(@Valid @RequestBody(required = false) RsEvent event) {
-//        if (event.getUser().getUserName())
+        List<User> userList = userController.getUserList();
+        List<@NotEmpty @Size(max = 8) String> userNames = userList.stream().map(user -> user.getUserName()).collect(Collectors.toList());
+        @Valid @NotNull User newUser = event.getUser();
+        if (!userNames.contains(newUser.getUserName())){
+            userList.add(newUser);
+        }
         rsList.add(event);
         return rsList;
     }

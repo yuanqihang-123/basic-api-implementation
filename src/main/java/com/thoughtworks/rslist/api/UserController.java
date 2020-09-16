@@ -9,9 +9,9 @@ import java.util.List;
 
 @RestController
 public class UserController {
-    private List<User> userList = getUserList();
+    private List<User> userList = InitUserList();
 
-    private List<User> getUserList() {
+    private List<User> InitUserList() {
         ArrayList<User> Users = new ArrayList<>();
         Users.add(new User("zs1","male",30,"zs1@tw.com","11234567890"));
         Users.add(new User("zs2","male",30,"zs2@tw.com","11234567890"));
@@ -19,4 +19,11 @@ public class UserController {
         return Users;
     }
 
+    public List<User> getUserList() {
+        return userList;
+    }
+
+    public void setUserList(List<User> userList) {
+        this.userList = userList;
+    }
 }
