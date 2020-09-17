@@ -8,6 +8,7 @@ import com.thoughtworks.rslist.entity.VoteEntity;
 import com.thoughtworks.rslist.exception.InvalidIndexException;
 import com.thoughtworks.rslist.repository.RsEventRepository;
 import com.thoughtworks.rslist.repository.UserRepository;
+import com.thoughtworks.rslist.repository.VoteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -28,6 +29,8 @@ public class RsController {
     UserRepository userRepository;
     @Autowired
     RsEventRepository rsEventRepository;
+    @Autowired
+    VoteRepository voteRepository;
 
     private List<RsEvent> rsList = getRsList();
 
@@ -65,6 +68,7 @@ public class RsController {
                 .eventName(event.getEventName())
                 .keyword(event.getKeyWord())
                 .user(userEntity)
+                .voteNum(0)
                 .build();
         rsEventRepository.save(rsEventEntity);
         return  ResponseEntity.status(201).header("index",""+rsList.indexOf(event)).body(event);
@@ -116,6 +120,15 @@ public class RsController {
         if (userEntity.getVoteNum()<voteNum){
             return ResponseEntity.status(400).build();
         }
+        //开始投票
+
+        RsEventEntity rsEventRepositoryById = rsEventRepository.getById(rsEventId);
+        vote.setRsEvent(rsEventRepositoryById);
+        voteRepository.save(vote);
+        rsEventRepositoryById.setVoteNum(voteNum+rsEventRepositoryById.getVoteNum());
+        rsEventRepository.save(rsEventRepositoryById);
+        userEntity.setVoteNum(userEntity.getVoteNum()-voteNum);
+        userRepository.save(userEntity);
         return  ResponseEntity.status(201).build();
     }
 }

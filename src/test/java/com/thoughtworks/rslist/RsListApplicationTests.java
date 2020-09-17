@@ -8,6 +8,7 @@ import com.thoughtworks.rslist.entity.UserEntity;
 import com.thoughtworks.rslist.entity.VoteEntity;
 import com.thoughtworks.rslist.repository.RsEventRepository;
 import com.thoughtworks.rslist.repository.UserRepository;
+import com.thoughtworks.rslist.repository.VoteRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -39,6 +40,8 @@ class RsListApplicationTests {
     RsEventRepository rsEventRepository;
     @Autowired
     UserRepository userRepository;
+    @Autowired
+    VoteRepository voteRepository;
 
 
     /*@Test
@@ -250,6 +253,49 @@ class RsListApplicationTests {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(voteJson))
                 .andExpect(status().is(400));
+    }
+
+    @Test
+    void voteToRsEventWhileVoteNumLessThanUserVoteNumTest() throws Exception {
+        User user = new User("zhangsan", "male", 30, "zs@tw.com", "11234567890");
+        ObjectMapper objectMapper = new ObjectMapper();
+        String json = objectMapper.writeValueAsString(user);
+        mockMvc.perform(post("/user")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(json))
+                .andExpect(status().is(201));
+        User user1 = new User("lisi", "male", 30, "zs@tw.com", "11234567890");
+        json = objectMapper.writeValueAsString(user1);
+        mockMvc.perform(post("/user")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(json))
+                .andExpect(status().is(201));
+
+        String rsjson = "{\"eventName\":\"猪肉涨价了\",\"keyWord\":\"经济\",\"userId\":1}";
+        mockMvc.perform(post("/rsEvent")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(rsjson))
+                .andExpect(status().isCreated());
+
+        UserEntity userEntity = UserEntity.builder()
+                .id(2)
+                .userName(user1.getUserName())
+                .gender(user1.getGender())
+                .age(user1.getAge())
+                .email(user1.getEmail())
+                .phone(user.getPhone())
+                .voteNum(10)
+                .build();
+        VoteEntity voteEntity = new VoteEntity(5, new Timestamp(System.currentTimeMillis()), userEntity);
+        String voteJson = objectMapper.writeValueAsString(voteEntity);
+        mockMvc.perform(post("/rsEvent/3/vote")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(voteJson))
+                .andExpect(status().isCreated());
+        VoteEntity vote = voteRepository.getById(4);
+        assertEquals(5,vote.getVoteNum());
+        assertEquals("猪肉涨价了",vote.getRsEvent().getEventName());
+        assertEquals("lisi",vote.getUser().getUserName());
     }
 
 
