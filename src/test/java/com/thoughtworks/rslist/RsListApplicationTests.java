@@ -1,6 +1,8 @@
 package com.thoughtworks.rslist;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.thoughtworks.rslist.api.RsController;
+import com.thoughtworks.rslist.dto.User;
 import com.thoughtworks.rslist.entity.RsEventEntity;
 import com.thoughtworks.rslist.entity.UserEntity;
 import com.thoughtworks.rslist.repository.RsEventRepository;
@@ -12,6 +14,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
+
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
@@ -169,6 +173,40 @@ class RsListApplicationTests {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(json))
                 .andExpect(status().is(400));
+    }
+
+    @Test
+    void updateEventWhenUserIdIsMatchWithRsEventTest() throws Exception {
+        User user = new User("zhangsan", "male", 30, "zs@tw.com", "11234567890");
+        ObjectMapper objectMapper = new ObjectMapper();
+        String json = objectMapper.writeValueAsString(user);
+
+        mockMvc.perform(post("/user")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(json))
+                .andExpect(status().is(201));
+        List<UserEntity> userEntitys = userRepository.findAll();
+        assertEquals("zhangsan", userEntitys.get(0).getUserName());
+        assertEquals(1, userEntitys.size());
+
+        String rsjson = "{\"eventName\":\"猪肉涨价了\",\"keyWord\":\"经济\",\"userId\":1}";
+        mockMvc.perform(post("/rsEvent")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(rsjson))
+                .andExpect(status().isCreated());
+        RsEventEntity rsEventEntity = rsEventRepository.getByEventName("猪肉涨价了");
+        assertEquals(2, rsEventEntity.getId());
+        assertEquals("猪肉涨价了", rsEventEntity.getEventName());
+        assertEquals("经济", rsEventEntity.getKeyword());
+
+        String json1 = "{\"eventName\":\"鸡肉涨价了\",\"keyWord\":\"经济1\",\"userId\":1}";
+        mockMvc.perform(patch("/rsEvent/2")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(json1))
+                .andExpect(status().isOk());
+        RsEventEntity rsEventById = rsEventRepository.getById(2);
+        assertEquals("鸡肉涨价了",rsEventById.getEventName());
+        assertEquals("经济1",rsEventById.getKeyword());
     }
 
 

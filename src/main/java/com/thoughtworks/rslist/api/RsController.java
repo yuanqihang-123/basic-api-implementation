@@ -87,14 +87,24 @@ public class RsController {
         return ResponseEntity.ok(rsList);
     }
 
-    @PatchMapping("/rsEvent")
-    public ResponseEntity<List<RsEvent>> patchEvent(@Valid @RequestBody RsEvent rsEvent) {
+    @PatchMapping("/rsEvent/{rsEventId}")
+    public ResponseEntity<RsEvent> patchEvent(@Valid @RequestBody RsEvent rsEvent, @PathVariable Integer rsEventId) {
         Integer userId = rsEvent.getUserId();
         UserEntity userEntity = userRepository.getById(userId);
         if (userEntity==null){
             //说明userid和rsevent不匹配
             return ResponseEntity.status(400).build();
         }
-        return ResponseEntity.ok(rsList);
+
+        RsEventEntity rsEventById = rsEventRepository.getById(rsEventId);
+        //匹配上了
+        if (rsEvent.getEventName()!=null){
+            rsEventById.setEventName(rsEvent.getEventName());
+        }
+        if (rsEvent.getKeyWord()!=null){
+            rsEventById.setKeyword(rsEvent.getKeyWord());
+        }
+        rsEventRepository.save(rsEventById);
+        return ResponseEntity.ok(rsEvent);
     }
 }
