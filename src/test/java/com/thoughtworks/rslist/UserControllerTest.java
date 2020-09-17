@@ -261,7 +261,7 @@ public class UserControllerTest {
     }
 
     @Test
-    void add_userEntity_to_repository_test() throws Exception {
+    void add_user_to_repository_test() throws Exception {
 
         User user = new User("zhangsan", "male", 30, "zs@tw.com", "11234567890");
         ObjectMapper objectMapper = new ObjectMapper();
@@ -273,6 +273,32 @@ public class UserControllerTest {
         List<UserEntity> userEntitys = userRepository.findAll();
         assertEquals("zhangsan", userEntitys.get(0).getUserName());
         assertEquals(1, userEntitys.size());
+    }
+
+    @Test
+    void get_user_from_repository_test() throws Exception {
+
+        User user = new User("zhangsan", "male", 30, "zs@tw.com", "11234567890");
+        ObjectMapper objectMapper = new ObjectMapper();
+        String json = objectMapper.writeValueAsString(user);
+
+        mockMvc.perform(post("/user")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(json))
+                .andExpect(status().is(200));
+        List<UserEntity> userEntitys = userRepository.findAll();
+        assertEquals("zhangsan", userEntitys.get(0).getUserName());
+        assertEquals(1, userEntitys.size());
+
+        mockMvc.perform(get("/user/1"))
+                .andExpect(status().is(200))
+                .andExpect(jsonPath("$.id",is(1)))
+                .andExpect(jsonPath("$.userName",is("zhangsan")))
+                .andExpect(jsonPath("$.gender",is("male")))
+                .andExpect(jsonPath("$.age",is(30)))
+                .andExpect(jsonPath("$.email",is("zs@tw.com")))
+                .andExpect(jsonPath("$.phone",is("11234567890")));
+
     }
 
 

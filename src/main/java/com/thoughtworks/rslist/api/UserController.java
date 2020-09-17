@@ -43,18 +43,16 @@ public class UserController {
         return ResponseEntity.ok(userList);
     }
 
-//    @PostMapping("/user")
-//    public ResponseEntity<List<User>> addUser(@Valid @RequestBody User user, BindingResult re) throws MethodArgumentNotValidException {
-//        if (re.getAllErrors().size() != 0) {
-//            throw new MethodArgumentNotValidException(null,re);
-//        }
-//        userList.add(user);
-//        return ResponseEntity.ok(userList);
-//    }
 
     @ExceptionHandler({MethodArgumentNotValidException.class})
-    public ResponseEntity<CommentError> exceptionHand(MethodArgumentNotValidException ex){
+    public ResponseEntity<CommentError> exceptionHand(MethodArgumentNotValidException ex) {
         return ResponseEntity.status(400).body(new CommentError("invalid user"));
+    }
+
+    @GetMapping("/user/{id}")
+    public ResponseEntity<UserEntity> getUsers(@PathVariable Integer id) {
+        UserEntity userEntity = userRepository.getOne(id);
+        return ResponseEntity.ok(userEntity);
     }
 
     @PostMapping("/user")
@@ -68,7 +66,7 @@ public class UserController {
 //                .phone(user.getPhone())
 //                .build();
         if (re.getAllErrors().size() != 0) {
-            throw new MethodArgumentNotValidException(null,re);
+            throw new MethodArgumentNotValidException(null, re);
         }
         userRepository.save(userEntity);
     }
