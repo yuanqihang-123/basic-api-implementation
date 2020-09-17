@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.persistence.criteria.CriteriaBuilder;
 import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
@@ -20,21 +21,22 @@ public class RsEvent {
         this.eventName = eventName;
         this.keyWord = keyWord;
     }
+
     @NotEmpty
     private String eventName;
     @NotEmpty
     private String keyWord;
     @Valid
     @NotNull
-    private User user;
+    private Integer userId;
 
-    @JsonIgnore
-    public User getUser() {
-        return user;
+//    @JsonIgnore
+    public Integer getUserId() {
+        return userId;
     }
 
     @JsonProperty
-    public void setUser(User user) {
-        this.user = user;
+    public void setUserId(Integer userId) {
+        this.userId = userId;
     }
 }

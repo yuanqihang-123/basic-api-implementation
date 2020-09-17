@@ -3,6 +3,8 @@ package com.thoughtworks.rslist;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.thoughtworks.rslist.api.RsController;
 import com.thoughtworks.rslist.dto.RsEvent;
+import com.thoughtworks.rslist.entity.RsEventEntity;
+import com.thoughtworks.rslist.repository.RsEventRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -13,6 +15,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -25,6 +28,8 @@ class RsListApplicationTests {
     MockMvc mockMvc;
     @Autowired
     RsController rsController;
+    @Autowired
+    RsEventRepository rsEventRepository;
 
 
     @Test
@@ -117,6 +122,24 @@ class RsListApplicationTests {
                 .andExpect(status().is(400))
                 .andExpect(jsonPath("$.error", is("invalid param")));
 
+
+    }
+
+    @Test
+    void addEventToRepositoryWhenUserNotRegisterTest() throws Exception {
+//        RsEvent rsEvent = new RsEvent("猪肉涨价了", "经济",1);
+//        ObjectMapper objectMapper = new ObjectMapper();
+//        String json = objectMapper.writeValueAsString(rsEvent);
+        String json = "{\"eventName\":\"猪肉涨价了\",\"keyWord\":\"经济\",\"userId\":1}";
+        mockMvc.perform(post("/rsEvent")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(json))
+                .andExpect(status().is(400));
+
+//        RsEventEntity rsEventEntity = rsEventRepository.getOne(1);
+//        assertEquals(1,rsEventEntity.getId());
+//        assertEquals("猪肉涨价了",rsEventEntity.getEventName());
+//        assertEquals("经济",rsEventEntity.getKeyword());
 
     }
 
