@@ -2,11 +2,11 @@ package com.thoughtworks.rslist.api;
 
 import com.thoughtworks.rslist.dto.RsEvent;
 import com.thoughtworks.rslist.dto.User;
+import com.thoughtworks.rslist.exception.CommentError;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.ArrayList;
@@ -18,9 +18,9 @@ public class UserController {
 
     private List<User> InitUserList() {
         ArrayList<User> Users = new ArrayList<>();
-        Users.add(new User("zs1","male",30,"zs1@tw.com","11234567890"));
-        Users.add(new User("zs2","male",30,"zs2@tw.com","11234567890"));
-        Users.add(new User("zs3","male",30,"zs3@tw.com","11234567890"));
+        Users.add(new User("zs1", "male", 30, "zs1@tw.com", "11234567890"));
+        Users.add(new User("zs2", "male", 30, "zs2@tw.com", "11234567890"));
+        Users.add(new User("zs3", "male", 30, "zs3@tw.com", "11234567890"));
         return Users;
     }
 
@@ -33,13 +33,21 @@ public class UserController {
     }
 
     @GetMapping("/users")
-    public ResponseEntity<List<User>> getUsers(){
+    public ResponseEntity<List<User>> getUsers() {
         return ResponseEntity.ok(userList);
     }
 
     @PostMapping("/user")
-    public ResponseEntity<List<User>> addUser(@Valid @RequestBody User user){
+    public ResponseEntity<List<User>> addUser(@Valid @RequestBody User user, BindingResult re) throws MethodArgumentNotValidException {
+        if (re.getAllErrors().size() != 0) {
+            throw new MethodArgumentNotValidException(null,re);
+        }
         userList.add(user);
         return ResponseEntity.ok(userList);
+    }
+
+    @ExceptionHandler({MethodArgumentNotValidException.class})
+    public ResponseEntity<CommentError> exceptionHand(MethodArgumentNotValidException ex){
+        return ResponseEntity.status(400).body(new CommentError("invalid user"));
     }
 }

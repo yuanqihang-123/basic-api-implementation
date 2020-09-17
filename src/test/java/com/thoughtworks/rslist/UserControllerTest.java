@@ -242,17 +242,17 @@ public class UserControllerTest {
                 .andExpect(jsonPath("$[0]", is(hasKey("user_name"))));
     }
 
-//    @Test
-//    void add_user_when_data_not_valid_test() throws Exception {
-//        User user = new User();
-//        ObjectMapper objectMapper = new ObjectMapper();
-//        String json = objectMapper.writeValueAsString(user);
-//        mockMvc.perform(post("/user")
-//                .contentType(MediaType.APPLICATION_JSON)
-//                .content(json))
-//                .andExpect(status().is(400))
-//                .andExpect(jsonPath("$.error", is("invalid user")));
-//    }
+    @Test
+    void add_user_when_data_not_valid_test() throws Exception {
+        User user = new User();
+        ObjectMapper objectMapper = new ObjectMapper();
+        String json = objectMapper.writeValueAsString(user);
+        mockMvc.perform(post("/user")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(json))
+                .andExpect(status().is(400))
+                .andExpect(jsonPath("$.error", is("invalid user")));
+    }
 
 
 }
