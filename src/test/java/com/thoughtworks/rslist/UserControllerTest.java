@@ -6,7 +6,9 @@ import com.thoughtworks.rslist.api.RsController;
 import com.thoughtworks.rslist.api.UserController;
 import com.thoughtworks.rslist.dto.RsEvent;
 import com.thoughtworks.rslist.dto.User;
+import com.thoughtworks.rslist.entity.RsEventEntity;
 import com.thoughtworks.rslist.entity.UserEntity;
+import com.thoughtworks.rslist.repository.RsEventRepository;
 import com.thoughtworks.rslist.repository.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +39,8 @@ public class UserControllerTest {
     UserController userController;
     @Autowired
     UserRepository userRepository;
+    @Autowired
+    RsEventRepository rsEventRepository;
 
 
     /*@Test
@@ -321,6 +325,41 @@ public class UserControllerTest {
 
         List<UserEntity> userEntitys1 = userRepository.findAll();
         assertEquals(0, userEntitys1.size());
+    }
+
+    @Test
+    void delete_user_from_repository_and_cascade_rsEvent_test() throws Exception {
+
+        User user = new User("zhangsan", "male", 30, "zs@tw.com", "11234567890");
+        ObjectMapper objectMapper = new ObjectMapper();
+        String json = objectMapper.writeValueAsString(user);
+
+        mockMvc.perform(post("/user")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(json))
+                .andExpect(status().is(201));
+        List<UserEntity> userEntitys = userRepository.findAll();
+        assertEquals("zhangsan", userEntitys.get(0).getUserName());
+        assertEquals(1, userEntitys.size());
+
+        String rsjson = "{\"eventName\":\"猪肉涨价了\",\"keyWord\":\"经济\",\"userId\":1}";
+        mockMvc.perform(post("/rsEvent")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(rsjson))
+                .andExpect(status().isCreated());
+        RsEventEntity rsEventEntity = rsEventRepository.getByEventName("猪肉涨价了");
+        assertEquals(2, rsEventEntity.getId());
+        assertEquals("猪肉涨价了", rsEventEntity.getEventName());
+        assertEquals("经济", rsEventEntity.getKeyword());
+
+        mockMvc.perform(delete("/user/1"))
+                .andExpect(status().is(200));
+
+        List<UserEntity> userEntitys1 = userRepository.findAll();
+        assertEquals(0, userEntitys1.size());
+        List<RsEventEntity> rsEvents = rsEventRepository.findAll();
+        assertEquals(0, rsEvents.size());
+
     }
 
 
