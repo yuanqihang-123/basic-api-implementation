@@ -1,10 +1,9 @@
 package com.thoughtworks.rslist.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.thoughtworks.rslist.dto.User;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -15,7 +14,8 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Data
+@Getter
+@Setter
 public class RsEventEntity {
     @Id
     @GeneratedValue
@@ -30,4 +30,21 @@ public class RsEventEntity {
     private UserEntity user;
     @OneToMany(mappedBy = "rsEvent",cascade = CascadeType.REMOVE)
     private List<VoteEntity> votes;
+
+    @JsonIgnore
+    public UserEntity getUser() {
+        return user;
+    }
+    @JsonProperty
+    public void setUser(UserEntity user) {
+        this.user = user;
+    }
+    @JsonIgnore
+    public List<VoteEntity> getVotes() {
+        return votes;
+    }
+    @JsonProperty
+    public void setVotes(List<VoteEntity> votes) {
+        this.votes = votes;
+    }
 }

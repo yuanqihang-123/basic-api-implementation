@@ -43,12 +43,13 @@ public class RsController {
     }
 
 
-    @GetMapping("/rsEvent/{index}")
-    public ResponseEntity<RsEvent> getRsEvent(@PathVariable int index) throws InvalidIndexException {
-        if (index<1||index>rsList.size()){
+    @GetMapping("/rsEvent/{id}")
+    public ResponseEntity<RsEventEntity> getRsEvent(@PathVariable int id) throws InvalidIndexException {
+        RsEventEntity rsEventRepositoryById = rsEventRepository.getById(id);
+        if (rsEventRepositoryById==null){
             throw new InvalidIndexException();
         }
-        return ResponseEntity.ok(rsList.get(index - 1));
+        return ResponseEntity.ok(rsEventRepositoryById);
     }
 
 

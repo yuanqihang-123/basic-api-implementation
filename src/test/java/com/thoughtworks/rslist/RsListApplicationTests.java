@@ -18,13 +18,12 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.sql.Timestamp;
-import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.List;
 
+import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
@@ -44,16 +43,31 @@ class RsListApplicationTests {
     VoteRepository voteRepository;
 
 
-    /*@Test
+    @Test
     void getRsTest() throws Exception {
-//    {"eventName":"第一条事件","keyWord":"无分类"}
-        mockMvc.perform(get("/rsEvent/1"))
+        createUserAndReEvent();
+        mockMvc.perform(get("/rsEvent/2"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.eventName").value("第一条事件"))
-                .andExpect(jsonPath("$", not(hasKey("user"))));
+                .andExpect(jsonPath("$.eventName").value("猪肉涨价了"))
+                .andExpect(jsonPath("$.keyword", not(hasKey("经济"))));
     }
 
-    @Test
+    private void createUserAndReEvent() throws Exception {
+        User user = new User("zhangsan", "male", 30, "zs@tw.com", "11234567890");
+        ObjectMapper objectMapper = new ObjectMapper();
+        String json = objectMapper.writeValueAsString(user);
+        mockMvc.perform(post("/user")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(json))
+                .andExpect(status().is(201));
+        String rsjson = "{\"eventName\":\"猪肉涨价了\",\"keyWord\":\"经济\",\"userId\":1}";
+        mockMvc.perform(post("/rsEvent")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(rsjson))
+                .andExpect(status().isCreated());
+    }
+
+    /*/@Test
     void getRsEventsTest() throws Exception {
         mockMvc.perform(get("/rsEvents?start=1&end=3"))
                 .andExpect(status().isOk())
