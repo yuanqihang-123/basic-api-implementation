@@ -86,4 +86,10 @@ public class RsController {
         rsList.remove(index - 1);
         return ResponseEntity.ok(rsList);
     }
+
+    @PatchMapping("/rsEvent")
+    public ResponseEntity<List<RsEvent>> patchEvent(@Valid @RequestBody RsEvent rsEvent) {
+
+        return ResponseEntity.ok(rsList);
+    }
 }

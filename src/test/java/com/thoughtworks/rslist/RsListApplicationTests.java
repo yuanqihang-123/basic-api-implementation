@@ -14,6 +14,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -149,6 +150,16 @@ class RsListApplicationTests {
         assertEquals(2, rsEventEntity.getId());
         assertEquals("猪肉涨价了", rsEventEntity.getEventName());
         assertEquals("经济", rsEventEntity.getKeyword());
+
+    }
+
+    @Test
+    void updateEventWhenUserIdIsNotValidTest() throws Exception {
+        String json = "{\"eventName\":\"猪肉涨价了\",\"keyWord\":\"经济\"}";
+        mockMvc.perform(patch("/rsEvent")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(json))
+                .andExpect(status().isBadRequest());
 
     }
 
