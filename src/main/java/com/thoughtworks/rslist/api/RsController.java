@@ -2,8 +2,10 @@ package com.thoughtworks.rslist.api;
 
 import com.thoughtworks.rslist.dto.RsEvent;
 import com.thoughtworks.rslist.dto.User;
+import com.thoughtworks.rslist.entity.RsEventEntity;
 import com.thoughtworks.rslist.entity.UserEntity;
 import com.thoughtworks.rslist.exception.InvalidIndexException;
+import com.thoughtworks.rslist.repository.RsEventRepository;
 import com.thoughtworks.rslist.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +25,8 @@ public class RsController {
     UserController userController;
     @Autowired
     UserRepository userRepository;
+    @Autowired
+    RsEventRepository rsEventRepository;
 
     private List<RsEvent> rsList = getRsList();
 
@@ -50,13 +54,19 @@ public class RsController {
     }
 
     @PostMapping("/rsEvent")
-    ResponseEntity<List<RsEvent>> addRsEvent(@Valid @RequestBody(required = false) RsEvent event) {
+    ResponseEntity<RsEvent> addRsEvent(@Valid @RequestBody(required = false) RsEvent event) {
         Integer userId = event.getUserId();
         UserEntity userEntity = userRepository.getById(userId);
         if (userEntity==null){
             return ResponseEntity.status(400).build();
         }
-        return  ResponseEntity.status(201).header("index",""+rsList.indexOf(event)).body(rsList);
+        RsEventEntity rsEventEntity = RsEventEntity.builder()
+                .eventName(event.getEventName())
+                .keyword(event.getKeyWord())
+                .user(userEntity)
+                .build();
+        rsEventRepository.save(rsEventEntity);
+        return  ResponseEntity.status(201).header("index",""+rsList.indexOf(event)).body(event);
     }
 
     @PutMapping("/rsEvent/{index}")

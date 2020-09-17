@@ -1,10 +1,10 @@
 package com.thoughtworks.rslist;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.thoughtworks.rslist.api.RsController;
-import com.thoughtworks.rslist.dto.RsEvent;
 import com.thoughtworks.rslist.entity.RsEventEntity;
+import com.thoughtworks.rslist.entity.UserEntity;
 import com.thoughtworks.rslist.repository.RsEventRepository;
+import com.thoughtworks.rslist.repository.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -13,11 +13,9 @@ import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @SpringBootTest
@@ -30,9 +28,11 @@ class RsListApplicationTests {
     RsController rsController;
     @Autowired
     RsEventRepository rsEventRepository;
+    @Autowired
+    UserRepository userRepository;
 
 
-    @Test
+    /*@Test
     void getRsTest() throws Exception {
 //    {"eventName":"第一条事件","keyWord":"无分类"}
         mockMvc.perform(get("/rsEvent/1"))
@@ -124,22 +124,31 @@ class RsListApplicationTests {
 
 
     }
-
+*/
     @Test
     void addEventToRepositoryWhenUserNotRegisterTest() throws Exception {
-//        RsEvent rsEvent = new RsEvent("猪肉涨价了", "经济",1);
-//        ObjectMapper objectMapper = new ObjectMapper();
-//        String json = objectMapper.writeValueAsString(rsEvent);
         String json = "{\"eventName\":\"猪肉涨价了\",\"keyWord\":\"经济\",\"userId\":1}";
         mockMvc.perform(post("/rsEvent")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(json))
                 .andExpect(status().is(400));
+    }
 
-//        RsEventEntity rsEventEntity = rsEventRepository.getOne(1);
-//        assertEquals(1,rsEventEntity.getId());
-//        assertEquals("猪肉涨价了",rsEventEntity.getEventName());
-//        assertEquals("经济",rsEventEntity.getKeyword());
+    @Test
+    void addEventToRepositoryWhenUserRegisterTest() throws Exception {
+        UserEntity userEntity = new UserEntity(null, "zhangsan", "male", 30, "zs@tw.com", "11234567890");
+        userRepository.save(userEntity);
+
+        String json = "{\"eventName\":\"猪肉涨价了\",\"keyWord\":\"经济\",\"userId\":1}";
+        mockMvc.perform(post("/rsEvent")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(json))
+                .andExpect(status().isCreated());
+
+        RsEventEntity rsEventEntity = rsEventRepository.getByEventName("猪肉涨价了");
+        assertEquals(2, rsEventEntity.getId());
+        assertEquals("猪肉涨价了", rsEventEntity.getEventName());
+        assertEquals("经济", rsEventEntity.getKeyword());
 
     }
 

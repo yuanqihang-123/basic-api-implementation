@@ -8,4 +8,6 @@ import java.util.List;
 
 @Repository
 public interface RsEventRepository extends JpaRepository<RsEventEntity,Integer> {
+    RsEventEntity getByEventName(String eventName);
+    RsEventEntity getById(Integer id);
 }
