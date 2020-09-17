@@ -56,7 +56,7 @@ public class UserController {
     }
 
     @PostMapping("/user")
-    public void addUserEntity(@Valid @RequestBody User user, BindingResult re) throws MethodArgumentNotValidException {
+    public ResponseEntity<UserEntity> addUserEntity(@Valid @RequestBody User user, BindingResult re) throws MethodArgumentNotValidException {
         UserEntity userEntity = new UserEntity(null, user.getUserName(), user.getGender(), user.getAge(), user.getEmail(), user.getPhone());
 //        UserEntity userEntity = UserEntity.builder()
 //                .userName(user.getUserName())
@@ -69,6 +69,7 @@ public class UserController {
             throw new MethodArgumentNotValidException(null, re);
         }
         userRepository.save(userEntity);
+        return ResponseEntity.created(null).body(userEntity);
     }
 
 }

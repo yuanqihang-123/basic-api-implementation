@@ -269,7 +269,7 @@ public class UserControllerTest {
         mockMvc.perform(post("/user")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(json))
-                .andExpect(status().is(200));
+                .andExpect(status().is(201));
         List<UserEntity> userEntitys = userRepository.findAll();
         assertEquals("zhangsan", userEntitys.get(0).getUserName());
         assertEquals(1, userEntitys.size());
@@ -285,7 +285,7 @@ public class UserControllerTest {
         mockMvc.perform(post("/user")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(json))
-                .andExpect(status().is(200));
+                .andExpect(status().is(201));
         List<UserEntity> userEntitys = userRepository.findAll();
         assertEquals("zhangsan", userEntitys.get(0).getUserName());
         assertEquals(1, userEntitys.size());
