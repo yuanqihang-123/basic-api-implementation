@@ -89,7 +89,12 @@ public class RsController {
 
     @PatchMapping("/rsEvent")
     public ResponseEntity<List<RsEvent>> patchEvent(@Valid @RequestBody RsEvent rsEvent) {
-
+        Integer userId = rsEvent.getUserId();
+        UserEntity userEntity = userRepository.getById(userId);
+        if (userEntity==null){
+            //说明userid和rsevent不匹配
+            return ResponseEntity.status(400).build();
+        }
         return ResponseEntity.ok(rsList);
     }
 }

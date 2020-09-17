@@ -160,7 +160,15 @@ class RsListApplicationTests {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(json))
                 .andExpect(status().isBadRequest());
+    }
 
+    @Test
+    void updateEventWhenUserIdIsNotMatchWithRsEventTest() throws Exception {
+        String json = "{\"eventName\":\"猪肉涨价了\",\"keyWord\":\"经济\",\"userId\":1}";
+        mockMvc.perform(patch("/rsEvent")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(json))
+                .andExpect(status().is(400));
     }
 
 
