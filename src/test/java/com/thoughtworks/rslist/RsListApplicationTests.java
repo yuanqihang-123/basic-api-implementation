@@ -181,7 +181,7 @@ class RsListApplicationTests {
     @Test
     void updateEventWhenUserIdIsNotValidTest() throws Exception {
         String json = "{\"eventName\":\"猪肉涨价了\",\"keyWord\":\"经济\"}";
-        mockMvc.perform(patch("/rsEvent")
+        mockMvc.perform(patch("/rsEvent/1")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(json))
                 .andExpect(status().isBadRequest());
@@ -190,7 +190,7 @@ class RsListApplicationTests {
     @Test
     void updateEventWhenUserIdIsNotMatchWithRsEventTest() throws Exception {
         String json = "{\"eventName\":\"猪肉涨价了\",\"keyWord\":\"经济\",\"userId\":1}";
-        mockMvc.perform(patch("/rsEvent")
+        mockMvc.perform(patch("/rsEvent/1")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(json))
                 .andExpect(status().is(400));
