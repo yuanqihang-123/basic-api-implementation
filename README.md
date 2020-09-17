@@ -104,6 +104,17 @@ notice: 注意@Valid和@Validated的配合使用
 
 ### 作业描述(jpa-1)
 
+
+#### 实现如下接口
+* 注册用户：参照demo，将注册用户持久化到数据库中(docker容器内启动的mysql数据库，并非内存数据库)
+* 获取用户：新增获取用户接口，传递id返回对应id的用户数据
+* 删除用户：新增删除用户接口，传递id从数据库中删除对应id用户数据
+* 写测试！！！
+<span style="color: red"> 注意：最终需要将改动合并到master分支 </span> 
+
+
+### 作业描述(jpa-2)
+
 #### 实现或修改如下接口
 * 修改添加热搜事件接口：参照demo，将添加RsEvent持久化到数据库中
     ```
@@ -114,7 +125,7 @@ notice: 注意@Valid和@Validated的配合使用
     }
   ```
   其中user需要是已注册用户，否则添加失败返回400
-  
+
 
 * 修改删除用户接口：参照demo，删除用户时，需要同时删除该用户所创建的热搜事件(使用JPA提供的mapping注解@ManyToOne @OneToMany)
 * 添加更新接口
@@ -131,7 +142,7 @@ notice: 注意@Valid和@Validated的配合使用
           userId为必传字段
           当只传了eventName没传keyword时只更新eventName
           当只传了keyword没传eventName时只更新keyword
-          
+
 * 添加投票接口
     ```
     request: post /rs/vote/{rsEventId}
@@ -161,5 +172,3 @@ notice: 注意@Valid和@Validated的配合使用
 * 写测试！！！
 
 <span style="color: red"> 注意：最终需要将改动合并到master分支 </span> 
-
-
