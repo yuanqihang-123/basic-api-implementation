@@ -4,6 +4,7 @@ import com.thoughtworks.rslist.dto.RsEvent;
 import com.thoughtworks.rslist.dto.User;
 import com.thoughtworks.rslist.entity.RsEventEntity;
 import com.thoughtworks.rslist.entity.UserEntity;
+import com.thoughtworks.rslist.entity.VoteEntity;
 import com.thoughtworks.rslist.exception.InvalidIndexException;
 import com.thoughtworks.rslist.repository.RsEventRepository;
 import com.thoughtworks.rslist.repository.UserRepository;
@@ -106,5 +107,15 @@ public class RsController {
         }
         rsEventRepository.save(rsEventById);
         return ResponseEntity.ok(rsEvent);
+    }
+
+    @PostMapping("/rsEvent/{rsEventId}/vote")
+    ResponseEntity<RsEvent> addRsEvent(@RequestBody(required = false) VoteEntity vote,@PathVariable Integer rsEventId) {
+        int voteNum = vote.getVoteNum();
+        UserEntity userEntity = vote.getUser();
+        if (userEntity.getVoteNum()<voteNum){
+            return ResponseEntity.status(400).build();
+        }
+        return  ResponseEntity.status(201).build();
     }
 }

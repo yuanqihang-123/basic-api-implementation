@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 @Entity
 @Table(name = "rs_event")
@@ -22,9 +23,11 @@ public class RsEventEntity {
     @Column(name = "name")
     private String eventName;
     private String keyword;
+    private Integer voteNum;
     @NotNull
     @ManyToOne
     @JoinColumn(name = "user_id")
     private UserEntity user;
-
+    @OneToMany(mappedBy = "rsEvent",cascade = CascadeType.REMOVE)
+    private List<VoteEntity> votes;
 }
