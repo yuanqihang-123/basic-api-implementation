@@ -43,21 +43,21 @@ public class UserController {
         return ResponseEntity.ok(userList);
     }
 
-    @PostMapping("/user")
-    public ResponseEntity<List<User>> addUser(@Valid @RequestBody User user, BindingResult re) throws MethodArgumentNotValidException {
-        if (re.getAllErrors().size() != 0) {
-            throw new MethodArgumentNotValidException(null,re);
-        }
-        userList.add(user);
-        return ResponseEntity.ok(userList);
-    }
+//    @PostMapping("/user")
+//    public ResponseEntity<List<User>> addUser(@Valid @RequestBody User user, BindingResult re) throws MethodArgumentNotValidException {
+//        if (re.getAllErrors().size() != 0) {
+//            throw new MethodArgumentNotValidException(null,re);
+//        }
+//        userList.add(user);
+//        return ResponseEntity.ok(userList);
+//    }
 
     @ExceptionHandler({MethodArgumentNotValidException.class})
     public ResponseEntity<CommentError> exceptionHand(MethodArgumentNotValidException ex){
         return ResponseEntity.status(400).body(new CommentError("invalid user"));
     }
 
-    @PostMapping("/userEntity")
+    @PostMapping("/user")
     public void addUserEntity(@Valid @RequestBody User user, BindingResult re) throws MethodArgumentNotValidException {
         UserEntity userEntity = new UserEntity(null, user.getUserName(), user.getGender(), user.getAge(), user.getEmail(), user.getPhone());
 //        UserEntity userEntity = UserEntity.builder()

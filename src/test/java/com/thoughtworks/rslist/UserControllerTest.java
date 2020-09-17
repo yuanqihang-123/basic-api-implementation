@@ -266,7 +266,7 @@ public class UserControllerTest {
         User user = new User("zhangsan", "male", 30, "zs@tw.com", "11234567890");
         ObjectMapper objectMapper = new ObjectMapper();
         String json = objectMapper.writeValueAsString(user);
-        mockMvc.perform(post("/userEntity")
+        mockMvc.perform(post("/user")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(json))
                 .andExpect(status().is(200));
