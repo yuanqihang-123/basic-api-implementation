@@ -50,9 +50,16 @@ public class UserController {
     }
 
     @GetMapping("/user/{id}")
-    public ResponseEntity<UserEntity> getUsers(@PathVariable Integer id) {
+    public ResponseEntity<UserEntity> getUser(@PathVariable Integer id) {
         UserEntity userEntity = userRepository.getOne(id);
         return ResponseEntity.ok(userEntity);
+    }
+
+    @DeleteMapping("/user/{id}")
+    public ResponseEntity<UserEntity> deleteUser(@PathVariable Integer id) {
+        UserEntity user = userRepository.getOne(id);
+        userRepository.delete(user);
+        return ResponseEntity.ok().build();
     }
 
     @PostMapping("/user")

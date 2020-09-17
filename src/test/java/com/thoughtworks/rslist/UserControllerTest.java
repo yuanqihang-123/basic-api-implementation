@@ -21,8 +21,7 @@ import java.util.List;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.hasKey;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -292,13 +291,36 @@ public class UserControllerTest {
 
         mockMvc.perform(get("/user/1"))
                 .andExpect(status().is(200))
-                .andExpect(jsonPath("$.id",is(1)))
-                .andExpect(jsonPath("$.userName",is("zhangsan")))
-                .andExpect(jsonPath("$.gender",is("male")))
-                .andExpect(jsonPath("$.age",is(30)))
-                .andExpect(jsonPath("$.email",is("zs@tw.com")))
-                .andExpect(jsonPath("$.phone",is("11234567890")));
+                .andExpect(jsonPath("$.id", is(1)))
+                .andExpect(jsonPath("$.userName", is("zhangsan")))
+                .andExpect(jsonPath("$.gender", is("male")))
+                .andExpect(jsonPath("$.age", is(30)))
+                .andExpect(jsonPath("$.email", is("zs@tw.com")))
+                .andExpect(jsonPath("$.phone", is("11234567890")));
 
+    }
+
+    @Test
+    void delete_user_from_repository_test() throws Exception {
+
+        User user = new User("zhangsan", "male", 30, "zs@tw.com", "11234567890");
+        ObjectMapper objectMapper = new ObjectMapper();
+        String json = objectMapper.writeValueAsString(user);
+
+        mockMvc.perform(post("/user")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(json))
+                .andExpect(status().is(201));
+
+        List<UserEntity> userEntitys = userRepository.findAll();
+        assertEquals("zhangsan", userEntitys.get(0).getUserName());
+        assertEquals(1, userEntitys.size());
+
+        mockMvc.perform(delete("/user/1"))
+                .andExpect(status().is(200));
+
+        List<UserEntity> userEntitys1 = userRepository.findAll();
+        assertEquals(0, userEntitys1.size());
     }
 
 
