@@ -30,15 +30,3 @@ public class User {
     @JsonProperty("user_phone")
     private String phone;
 }
-
-//"userName": "xiaowang",
-//        "age": 19,
-//        "gender": "female",
-//        "email": "a@thoughtworks.com",
-//        "phone": 18888888888
-
-//    名称(不超过8位字符，不能为空)
-//  性别（不能为空）
-//          年龄（18到100岁之间，不能为空）
-//          邮箱（符合邮箱规范）
-//          手机号（1开头的11位数字，不能为空）

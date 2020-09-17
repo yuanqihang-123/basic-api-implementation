@@ -6,7 +6,8 @@ import com.thoughtworks.rslist.api.RsController;
 import com.thoughtworks.rslist.api.UserController;
 import com.thoughtworks.rslist.dto.RsEvent;
 import com.thoughtworks.rslist.dto.User;
-import org.hamcrest.core.Is;
+import com.thoughtworks.rslist.entity.UserEntity;
+import com.thoughtworks.rslist.repository.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -15,8 +16,11 @@ import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.List;
+
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.hasKey;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -32,6 +36,8 @@ public class UserControllerTest {
     RsController rsController;
     @Autowired
     UserController userController;
+    @Autowired
+    UserRepository userRepository;
 
 
     @Test
@@ -252,6 +258,21 @@ public class UserControllerTest {
                 .content(json))
                 .andExpect(status().is(400))
                 .andExpect(jsonPath("$.error", is("invalid user")));
+    }
+
+    @Test
+    void add_userEntity_to_repository_test() throws Exception {
+
+        User user = new User("zhangsan", "male", 30, "zs@tw.com", "11234567890");
+        ObjectMapper objectMapper = new ObjectMapper();
+        String json = objectMapper.writeValueAsString(user);
+        mockMvc.perform(post("/userEntity")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(json))
+                .andExpect(status().is(200));
+        List<UserEntity> userEntitys = userRepository.findAll();
+        assertEquals("zhangsan", userEntitys.get(0).getUserName());
+        assertEquals(1, userEntitys.size());
     }
 
 

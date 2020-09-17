@@ -2,7 +2,10 @@ package com.thoughtworks.rslist.api;
 
 import com.thoughtworks.rslist.dto.RsEvent;
 import com.thoughtworks.rslist.dto.User;
+import com.thoughtworks.rslist.entity.UserEntity;
 import com.thoughtworks.rslist.exception.CommentError;
+import com.thoughtworks.rslist.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -15,6 +18,9 @@ import java.util.List;
 @RestController
 public class UserController {
     private List<User> userList = InitUserList();
+
+    @Autowired
+    UserRepository userRepository;
 
     private List<User> InitUserList() {
         ArrayList<User> Users = new ArrayList<>();
@@ -50,4 +56,21 @@ public class UserController {
     public ResponseEntity<CommentError> exceptionHand(MethodArgumentNotValidException ex){
         return ResponseEntity.status(400).body(new CommentError("invalid user"));
     }
+
+    @PostMapping("/userEntity")
+    public void addUserEntity(@Valid @RequestBody User user, BindingResult re) throws MethodArgumentNotValidException {
+        UserEntity userEntity = new UserEntity(null, user.getUserName(), user.getGender(), user.getAge(), user.getEmail(), user.getPhone());
+//        UserEntity userEntity = UserEntity.builder()
+//                .userName(user.getUserName())
+//                .gender(user.getGender())
+//                .age(user.getAge())
+//                .email(user.getEmail())
+//                .phone(user.getPhone())
+//                .build();
+        if (re.getAllErrors().size() != 0) {
+            throw new MethodArgumentNotValidException(null,re);
+        }
+        userRepository.save(userEntity);
+    }
+
 }
