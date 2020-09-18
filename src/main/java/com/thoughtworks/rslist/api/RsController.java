@@ -1,11 +1,9 @@
 package com.thoughtworks.rslist.api;
 
 import com.thoughtworks.rslist.dto.RsEvent;
-import com.thoughtworks.rslist.dto.User;
 import com.thoughtworks.rslist.dto.Vote;
 import com.thoughtworks.rslist.entity.RsEventEntity;
 import com.thoughtworks.rslist.entity.UserEntity;
-import com.thoughtworks.rslist.entity.VoteEntity;
 import com.thoughtworks.rslist.exception.InvalidIndexException;
 import com.thoughtworks.rslist.repository.RsEventRepository;
 import com.thoughtworks.rslist.repository.UserRepository;
@@ -16,13 +14,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @RestController
 public class RsController {
@@ -130,7 +124,7 @@ public class RsController {
 
         RsEventEntity rsEventRepositoryById = rsEventRepository.getById(rsEventId);
         vote.setRsEvent_id(rsEventId);
-        VoteEntity voteEntity = VoteEntity.builder()
+        com.thoughtworks.rslist.entity.VoteEntity voteEntity = com.thoughtworks.rslist.entity.VoteEntity.builder()
                 .voteNum(vote.getVoteNum())
                 .voteTime(vote.getVoteTime())
                 .rsEvent(rsEventRepositoryById)
