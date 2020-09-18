@@ -280,18 +280,8 @@ public class UserControllerTest {
 
     @Test
     void get_user_from_repository_test() throws Exception {
-
-        User user = new User("zhangsan", "male", 30, "zs@tw.com", "11234567890");
-        ObjectMapper objectMapper = new ObjectMapper();
-        String json = objectMapper.writeValueAsString(user);
-
-        mockMvc.perform(post("/user")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(json))
-                .andExpect(status().is(201));
-        List<UserEntity> userEntitys = userRepository.findAll();
-        assertEquals("zhangsan", userEntitys.get(0).getUserName());
-        assertEquals(1, userEntitys.size());
+        UserEntity userEntity = new UserEntity(null, "zhangsan", "male", 30, "zs@tw.com", "11234567890");
+        userRepository.save(userEntity);
 
         mockMvc.perform(get("/user/1"))
                 .andExpect(status().is(200))
@@ -306,19 +296,8 @@ public class UserControllerTest {
 
     @Test
     void delete_user_from_repository_test() throws Exception {
-
-        User user = new User("zhangsan", "male", 30, "zs@tw.com", "11234567890");
-        ObjectMapper objectMapper = new ObjectMapper();
-        String json = objectMapper.writeValueAsString(user);
-
-        mockMvc.perform(post("/user")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(json))
-                .andExpect(status().is(201));
-
-        List<UserEntity> userEntitys = userRepository.findAll();
-        assertEquals("zhangsan", userEntitys.get(0).getUserName());
-        assertEquals(1, userEntitys.size());
+        UserEntity userEntity = new UserEntity(null, "zhangsan", "male", 30, "zs@tw.com", "11234567890");
+        userRepository.save(userEntity);
 
         mockMvc.perform(delete("/user/1"))
                 .andExpect(status().is(200));
@@ -329,28 +308,10 @@ public class UserControllerTest {
 
     @Test
     void delete_user_from_repository_and_cascade_rsEvent_test() throws Exception {
-
-        User user = new User("zhangsan", "male", 30, "zs@tw.com", "11234567890");
-        ObjectMapper objectMapper = new ObjectMapper();
-        String json = objectMapper.writeValueAsString(user);
-
-        mockMvc.perform(post("/user")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(json))
-                .andExpect(status().is(201));
-        List<UserEntity> userEntitys = userRepository.findAll();
-        assertEquals("zhangsan", userEntitys.get(0).getUserName());
-        assertEquals(1, userEntitys.size());
-
-        String rsjson = "{\"eventName\":\"猪肉涨价了\",\"keyWord\":\"经济\",\"userId\":1}";
-        mockMvc.perform(post("/rsEvent")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(rsjson))
-                .andExpect(status().isCreated());
-        RsEventEntity rsEventEntity = rsEventRepository.getByEventName("猪肉涨价了");
-        assertEquals(2, rsEventEntity.getId());
-        assertEquals("猪肉涨价了", rsEventEntity.getEventName());
-        assertEquals("经济", rsEventEntity.getKeyword());
+        UserEntity userEntity = new UserEntity(null, "zhangsan", "male", 30, "zs@tw.com", "11234567890");
+        userRepository.save(userEntity);
+        RsEventEntity rsEventEntity = new RsEventEntity(null, "猪肉涨价了", "经济", 0, userEntity);
+        rsEventRepository.save(rsEventEntity);
 
         mockMvc.perform(delete("/user/1"))
                 .andExpect(status().is(200));

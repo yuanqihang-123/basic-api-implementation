@@ -3,6 +3,7 @@ package com.thoughtworks.rslist;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.thoughtworks.rslist.api.RsController;
 import com.thoughtworks.rslist.dto.User;
+import com.thoughtworks.rslist.dto.Vote;
 import com.thoughtworks.rslist.entity.RsEventEntity;
 import com.thoughtworks.rslist.entity.UserEntity;
 import com.thoughtworks.rslist.entity.VoteEntity;
@@ -45,27 +46,16 @@ class RsListApplicationTests {
 
     @Test
     void getRsTest() throws Exception {
-        createUserAndReEvent();
+        UserEntity userEntity = new UserEntity(null, "zhangsan", "male", 30, "zs@tw.com", "11234567890");
+        userRepository.save(userEntity);
+        RsEventEntity rsEventEntity = new RsEventEntity(null, "猪肉涨价了", "经济", 0, userEntity);
+        rsEventRepository.save(rsEventEntity);
         mockMvc.perform(get("/rsEvent/2"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.eventName").value("猪肉涨价了"))
                 .andExpect(jsonPath("$.keyword", not(hasKey("经济"))));
     }
 
-    private void createUserAndReEvent() throws Exception {
-        User user = new User("zhangsan", "male", 30, "zs@tw.com", "11234567890");
-        ObjectMapper objectMapper = new ObjectMapper();
-        String json = objectMapper.writeValueAsString(user);
-        mockMvc.perform(post("/user")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(json))
-                .andExpect(status().is(201));
-        String rsjson = "{\"eventName\":\"猪肉涨价了\",\"keyWord\":\"经济\",\"userId\":1}";
-        mockMvc.perform(post("/rsEvent")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(rsjson))
-                .andExpect(status().isCreated());
-    }
 
     /*/@Test
     void getRsEventsTest() throws Exception {
@@ -198,118 +188,35 @@ class RsListApplicationTests {
 
     @Test
     void updateEventWhenUserIdIsMatchWithRsEventTest() throws Exception {
-        User user = new User("zhangsan", "male", 30, "zs@tw.com", "11234567890");
-        ObjectMapper objectMapper = new ObjectMapper();
-        String json = objectMapper.writeValueAsString(user);
-
-        mockMvc.perform(post("/user")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(json))
-                .andExpect(status().is(201));
-        List<UserEntity> userEntitys = userRepository.findAll();
-        assertEquals("zhangsan", userEntitys.get(0).getUserName());
-        assertEquals(1, userEntitys.size());
-
-        String rsjson = "{\"eventName\":\"猪肉涨价了\",\"keyWord\":\"经济\",\"userId\":1}";
-        mockMvc.perform(post("/rsEvent")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(rsjson))
-                .andExpect(status().isCreated());
-        RsEventEntity rsEventEntity = rsEventRepository.getByEventName("猪肉涨价了");
-        assertEquals(2, rsEventEntity.getId());
-        assertEquals("猪肉涨价了", rsEventEntity.getEventName());
-        assertEquals("经济", rsEventEntity.getKeyword());
-
-        String json1 = "{\"eventName\":\"鸡肉涨价了\",\"keyWord\":\"经济1\",\"userId\":1}";
+        UserEntity userEntity = new UserEntity(null, "zhangsan", "male", 30, "zs@tw.com", "11234567890");
+        userRepository.save(userEntity);
+        RsEventEntity rsEventEntity = new RsEventEntity(null, "猪肉涨价了", "经济", 0, userEntity);
+        rsEventRepository.save(rsEventEntity);
+        String json = "{\"eventName\":\"鸡肉涨价了\",\"keyWord\":\"经济1\",\"userId\":1}";
         mockMvc.perform(patch("/rsEvent/2")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(json1))
+                .content(json))
                 .andExpect(status().isOk());
         RsEventEntity rsEventById = rsEventRepository.getById(2);
-        assertEquals("鸡肉涨价了",rsEventById.getEventName());
-        assertEquals("经济1",rsEventById.getKeyword());
+        assertEquals("鸡肉涨价了", rsEventById.getEventName());
+        assertEquals("经济1", rsEventById.getKeyword());
     }
 
     @Test
     void voteToRsEventWhileVoteNumMoreThanUserVoteNumTest() throws Exception {
-        User user = new User("zhangsan", "male", 30, "zs@tw.com", "11234567890");
         ObjectMapper objectMapper = new ObjectMapper();
-        String json = objectMapper.writeValueAsString(user);
-        mockMvc.perform(post("/user")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(json))
-                .andExpect(status().is(201));
-        User user1 = new User("lisi", "male", 30, "zs@tw.com", "11234567890");
-        json = objectMapper.writeValueAsString(user1);
-        mockMvc.perform(post("/user")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(json))
-                .andExpect(status().is(201));
-
-        String rsjson = "{\"eventName\":\"猪肉涨价了\",\"keyWord\":\"经济\",\"userId\":1}";
-        mockMvc.perform(post("/rsEvent")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(rsjson))
-                .andExpect(status().isCreated());
-
-        UserEntity userEntity = UserEntity.builder()
-                .id(2)
-                .userName(user1.getUserName())
-                .gender(user1.getGender())
-                .age(user1.getAge())
-                .email(user1.getEmail())
-                .phone(user.getPhone())
-                .voteNum(10)
-                .build();
-        VoteEntity voteEntity = new VoteEntity(11, new Timestamp(System.currentTimeMillis()), userEntity);
-        String voteJson = objectMapper.writeValueAsString(voteEntity);
+        UserEntity userEntityOfCreat = new UserEntity(null, "zhangsan", "male", 30, "zs@tw.com", "11234567890");
+        userRepository.save(userEntityOfCreat);
+        UserEntity userEntityOfVote = new UserEntity(null, "lisi", "male", 30, "zs@tw.com", "11234567890");
+        userRepository.save(userEntityOfVote);
+        RsEventEntity rsEventEntity = new RsEventEntity(null, "猪肉涨价了", "经济", 0, userEntityOfCreat);
+        rsEventRepository.save(rsEventEntity);
+        Vote vote = new Vote(null,11, new Timestamp(System.currentTimeMillis()), userEntityOfVote.getId());
+        String voteJson = objectMapper.writeValueAsString(vote);
         mockMvc.perform(post("/rsEvent/3/vote")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(voteJson))
                 .andExpect(status().is(400));
-    }
-
-    @Test
-    void voteToRsEventWhileVoteNumLessThanUserVoteNumTest() throws Exception {
-        User user = new User("zhangsan", "male", 30, "zs@tw.com", "11234567890");
-        ObjectMapper objectMapper = new ObjectMapper();
-        String json = objectMapper.writeValueAsString(user);
-        mockMvc.perform(post("/user")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(json))
-                .andExpect(status().is(201));
-        User user1 = new User("lisi", "male", 30, "zs@tw.com", "11234567890");
-        json = objectMapper.writeValueAsString(user1);
-        mockMvc.perform(post("/user")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(json))
-                .andExpect(status().is(201));
-
-        String rsjson = "{\"eventName\":\"猪肉涨价了\",\"keyWord\":\"经济\",\"userId\":1}";
-        mockMvc.perform(post("/rsEvent")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(rsjson))
-                .andExpect(status().isCreated());
-
-        UserEntity userEntity = UserEntity.builder()
-                .id(2)
-                .userName(user1.getUserName())
-                .gender(user1.getGender())
-                .age(user1.getAge())
-                .email(user1.getEmail())
-                .phone(user.getPhone())
-                .voteNum(10)
-                .build();
-        VoteEntity voteEntity = new VoteEntity(5, new Timestamp(System.currentTimeMillis()), userEntity);
-        String voteJson = objectMapper.writeValueAsString(voteEntity);
-        mockMvc.perform(post("/rsEvent/3/vote")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(voteJson))
-                .andExpect(status().isCreated());
-        VoteEntity vote = voteRepository.getById(4);
-        assertEquals(5,vote.getVoteNum());
-        assertEquals("猪肉涨价了",vote.getRsEvent().getEventName());
-        assertEquals("lisi",vote.getUser().getUserName());
     }
 
 

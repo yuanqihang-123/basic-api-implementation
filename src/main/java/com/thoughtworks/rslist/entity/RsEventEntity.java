@@ -24,12 +24,22 @@ public class RsEventEntity {
     private String eventName;
     private String keyword;
     private Integer voteNum = 0;
+
+
     @NotNull
     @ManyToOne
     @JoinColumn(name = "user_id")
     private UserEntity user;
     @OneToMany(mappedBy = "rsEvent",cascade = CascadeType.REMOVE)
     private List<VoteEntity> votes;
+
+    public RsEventEntity(Integer id, String eventName, String keyword, Integer voteNum, @NotNull UserEntity user) {
+        this.id = id;
+        this.eventName = eventName;
+        this.keyword = keyword;
+        this.voteNum = voteNum;
+        this.user = user;
+    }
 
     @JsonIgnore
     public UserEntity getUser() {

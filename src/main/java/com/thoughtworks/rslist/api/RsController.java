@@ -2,6 +2,7 @@ package com.thoughtworks.rslist.api;
 
 import com.thoughtworks.rslist.dto.RsEvent;
 import com.thoughtworks.rslist.dto.User;
+import com.thoughtworks.rslist.dto.Vote;
 import com.thoughtworks.rslist.entity.RsEventEntity;
 import com.thoughtworks.rslist.entity.UserEntity;
 import com.thoughtworks.rslist.entity.VoteEntity;
@@ -11,6 +12,7 @@ import com.thoughtworks.rslist.repository.UserRepository;
 import com.thoughtworks.rslist.repository.VoteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -19,6 +21,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
@@ -45,11 +48,12 @@ public class RsController {
 
     @GetMapping("/rsEvent/{id}")
     public ResponseEntity<RsEventEntity> getRsEvent(@PathVariable int id) throws InvalidIndexException {
-        RsEventEntity rsEventRepositoryById = rsEventRepository.getById(id);
-        if (rsEventRepositoryById==null){
+//        RsEventEntity rsEventRepositoryById = rsEventRepository.getById(id);
+        Optional<RsEventEntity> result = rsEventRepository.findById(id);
+        if (!result.isPresent()){
             throw new InvalidIndexException();
         }
-        return ResponseEntity.ok(rsEventRepositoryById);
+        return ResponseEntity.ok(result.get());
     }
 
 
@@ -114,18 +118,25 @@ public class RsController {
         return ResponseEntity.ok(rsEvent);
     }
 
+    @Transactional
     @PostMapping("/rsEvent/{rsEventId}/vote")
-    ResponseEntity<RsEvent> addRsEvent(@RequestBody(required = false) VoteEntity vote,@PathVariable Integer rsEventId) {
+    ResponseEntity<RsEvent> addRsEvent(@RequestBody(required = false) Vote vote, @PathVariable Integer rsEventId) {
         int voteNum = vote.getVoteNum();
-        UserEntity userEntity = vote.getUser();
+        UserEntity userEntity = userRepository.findById(vote.getUser_id()).get();
         if (userEntity.getVoteNum()<voteNum){
             return ResponseEntity.status(400).build();
         }
         //开始投票
 
         RsEventEntity rsEventRepositoryById = rsEventRepository.getById(rsEventId);
-        vote.setRsEvent(rsEventRepositoryById);
-        voteRepository.save(vote);
+        vote.setRsEvent_id(rsEventId);
+        VoteEntity voteEntity = VoteEntity.builder()
+                .voteNum(vote.getVoteNum())
+                .voteTime(vote.getVoteTime())
+                .rsEvent(rsEventRepositoryById)
+                .user(userEntity)
+                .build();
+        voteRepository.save(voteEntity);
         rsEventRepositoryById.setVoteNum(voteNum+rsEventRepositoryById.getVoteNum());
         rsEventRepository.save(rsEventRepositoryById);
         userEntity.setVoteNum(userEntity.getVoteNum()-voteNum);

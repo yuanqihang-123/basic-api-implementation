@@ -4,5 +4,4 @@ import com.thoughtworks.rslist.entity.VoteEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface VoteRepository extends JpaRepository<VoteEntity,Integer> {
-    VoteEntity getById(Integer id);
 }
