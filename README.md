@@ -29,7 +29,7 @@ Error Handling: error-handling
 * 需求4： 修改某条事件时（通过参数传递的序号，修改列表中对应的事件数据），如果RequestBody只传了eventName没有传keyword那么仅仅只修改eventName
          如果只传了keyword没有传eventName，那么只修改keyword字段
          如果两个字段都传了，那么都进行修改
-         
+
 * 需求5： 通过参数传递的序号，删除列表中对应的某条事件数据
 
 
@@ -53,7 +53,7 @@ Error Handling: error-handling
       }
   }
   ``` 
-  
+
 * 如果userName已存在在user列表中的话则只需添加热搜事件到热搜事件列表，如果userName不存在，则将User添加到热搜事件列表中（相当于注册用户）
 * 需要对请求进行校验：其中user keyword eventName都不能为空, user的校验规则：
     ```
@@ -63,7 +63,7 @@ Error Handling: error-handling
   邮箱（符合邮箱规范）
   手机号（1开头的11位数字，不能为空）
     ```
-  
+
 * 测试需要对每个验证条件进行覆盖
 
 notice: 注意@Valid和@Validated的配合使用
@@ -84,12 +84,8 @@ notice: 注意@Valid和@Validated的配合使用
     }]
 * 先写测试！！！
 * hint: @JsonpProperty的使用
-
-
 <span style="color: red"> 注意：最终需要将改动合并到master分支 </span> 
-
 ### 作业描述(error-handling)
-
 #### 重复课堂上的Demo完成练习
 * 给所有接口添加错误处理：
     1. get /rs/list时对start和end进行校验，如果超出范围则返回 400 {error:"invalid request param"}
@@ -99,22 +95,15 @@ notice: 注意@Valid和@Validated的配合使用
     5. 先阅读：https://www.baeldung.com/spring-boot-logging
        在我们的exceptionHandler中添加日志，记录下错误的信息（error级别），运行程序试着观察是否有日志打印
 * 先写测试（除了日志）！
-
 <span style="color: red"> 注意：最终需要将改动合并到master分支 </span> 
-
 ### 作业描述(jpa-1)
-
-
 #### 实现如下接口
 * 注册用户：参照demo，将注册用户持久化到数据库中(docker容器内启动的mysql数据库，并非内存数据库)
 * 获取用户：新增获取用户接口，传递id返回对应id的用户数据
 * 删除用户：新增删除用户接口，传递id从数据库中删除对应id用户数据
 * 写测试！！！
 <span style="color: red"> 注意：最终需要将改动合并到master分支 </span> 
-
-
 ### 作业描述(jpa-2)
-
 #### 实现或修改如下接口
 * 修改添加热搜事件接口：参照demo，将添加RsEvent持久化到数据库中
     ```
@@ -125,8 +114,6 @@ notice: 注意@Valid和@Validated的配合使用
     }
   ```
   其中user需要是已注册用户，否则添加失败返回400
-
-
 * 修改删除用户接口：参照demo，删除用户时，需要同时删除该用户所创建的热搜事件(使用JPA提供的mapping注解@ManyToOne @OneToMany)
 * 添加更新接口
    ```
@@ -142,7 +129,6 @@ notice: 注意@Valid和@Validated的配合使用
           userId为必传字段
           当只传了eventName没传keyword时只更新eventName
           当只传了keyword没传eventName时只更新keyword
-
 * 添加投票接口
     ```
     request: post /rs/vote/{rsEventId}
@@ -156,7 +142,7 @@ notice: 注意@Valid和@Validated的配合使用
             考虑到以后需要查询投票记录的需求（根据userId查询他投过票的所有热搜事件，票数和投票时间，根据rsEventId查询所有给他投过票的用户，票数和投票时间），
             创建一个Vote表是一个明智的选择
             目前不用考虑给热搜事件列表排序的问题
-  
+
     ```
 * 修改其余所有接口：所有读取操作都改为从数据库中读取数据（包括重构测试）
   注意：需要修改热搜事件返回的数据结构，使其返回热搜事件id和获得的票数:
@@ -168,13 +154,17 @@ notice: 注意@Valid和@Validated的配合使用
             voteNum: 10
         }
     ```
-
 * 写测试！！！
-
 <span style="color: red"> 注意：最终需要将改动合并到master分支 </span> 
 
 ### 作业描述(jpa-3)
+#### 实现如下接口
+* 查询投票记录接口：
+    参数传入起止时间，查询在该时间范围内的所有投票记录，写测试验证
+* 这是最后一堂JPA课，把前面所有没做完的作业包括课上demo的范例都补上！
+<span style="color: red"> 注意：最终需要将改动合并到master分支 </span> 
 
+### 作业描述(spring-bean)
 
 * 去掉RsService上的@Service注解
 通过使用@Bean这种方式进行spring bean的定义和注入
@@ -182,4 +172,3 @@ reference: https://docs.spring.io/spring-javaconfig/docs/1.0.0.M4/reference/html
 
 * 阅读：https://docs.spring.io/spring-boot/docs/2.0.x/reference/html/using-boot-spring-beans-and-dependency-injection.html
 修改所有的service和controller 将依赖注入的方式改为通过构造函数注入（而非直接在字段上添加@Autowired）
-
