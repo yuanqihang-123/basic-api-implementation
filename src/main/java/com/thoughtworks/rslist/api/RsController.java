@@ -41,13 +41,18 @@ public class RsController {
 
 
     @GetMapping("/rsEvent/{id}")
-    public ResponseEntity<RsEventEntity> getRsEvent(@PathVariable int id) throws InvalidIndexException {
-//        RsEventEntity rsEventRepositoryById = rsEventRepository.getById(id);
+    public ResponseEntity<RsEvent> getRsEvent(@PathVariable int id) throws InvalidIndexException {
         Optional<RsEventEntity> result = rsEventRepository.findById(id);
         if (!result.isPresent()){
             throw new InvalidIndexException();
         }
-        return ResponseEntity.ok(result.get());
+        RsEventEntity re = result.get();
+        RsEvent rsEvent = RsEvent.builder()
+                .eventName(re.getEventName())
+                .keyWord(re.getKeyword())
+                .userId(re.getUser().getId())
+                .build();
+        return ResponseEntity.ok(rsEvent);
     }
 
 

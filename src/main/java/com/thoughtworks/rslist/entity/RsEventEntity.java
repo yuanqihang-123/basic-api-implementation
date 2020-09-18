@@ -41,20 +41,4 @@ public class RsEventEntity {
         this.user = user;
     }
 
-    @JsonIgnore
-    public UserEntity getUser() {
-        return user;
-    }
-    @JsonProperty
-    public void setUser(UserEntity user) {
-        this.user = user;
-    }
-    @JsonIgnore
-    public List<VoteEntity> getVotes() {
-        return votes;
-    }
-    @JsonProperty
-    public void setVotes(List<VoteEntity> votes) {
-        this.votes = votes;
-    }
 }

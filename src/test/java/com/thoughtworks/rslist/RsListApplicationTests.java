@@ -50,7 +50,8 @@ class RsListApplicationTests {
         mockMvc.perform(get("/rsEvent/2"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.eventName").value("猪肉涨价了"))
-                .andExpect(jsonPath("$.keyword", not(hasKey("经济"))));
+                .andExpect(jsonPath("$.keyWord", is("经济")))
+                .andExpect(jsonPath("$.userId", is(new Integer(1))));
     }
 
 
@@ -208,7 +209,7 @@ class RsListApplicationTests {
         userRepository.save(userEntityOfVote);
         RsEventEntity rsEventEntity = new RsEventEntity(null, "猪肉涨价了", "经济", 0, userEntityOfCreat);
         rsEventRepository.save(rsEventEntity);
-        Vote vote = new Vote(null,11, new Timestamp(System.currentTimeMillis()), userEntityOfVote.getId());
+        Vote vote = new Vote(null, 11, new Timestamp(System.currentTimeMillis()), userEntityOfVote.getId());
         String voteJson = objectMapper.writeValueAsString(vote);
         mockMvc.perform(post("/rsEvent/3/vote")
                 .contentType(MediaType.APPLICATION_JSON)
