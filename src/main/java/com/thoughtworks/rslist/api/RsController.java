@@ -8,6 +8,8 @@ import com.thoughtworks.rslist.exception.InvalidIndexException;
 import com.thoughtworks.rslist.repository.RsEventRepository;
 import com.thoughtworks.rslist.repository.UserRepository;
 import com.thoughtworks.rslist.repository.VoteRepository;
+import com.thoughtworks.rslist.service.RsService;
+import com.thoughtworks.rslist.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,14 +22,27 @@ import java.util.Optional;
 
 @RestController
 public class RsController {
-    @Autowired
-    UserController userController;
-    @Autowired
-    UserRepository userRepository;
-    @Autowired
-    RsEventRepository rsEventRepository;
-    @Autowired
-    VoteRepository voteRepository;
+//    @Autowired
+    private final UserController userController;
+//    @Autowired
+    private final UserRepository userRepository;
+//    @Autowired
+    private final RsEventRepository rsEventRepository;
+//    @Autowired
+    private final VoteRepository voteRepository;
+//    @Autowired
+    private final RsService rsService;
+//    @Autowired
+    private final UserService userService;
+
+    public RsController(UserController userController, UserRepository userRepository, RsEventRepository rsEventRepository, VoteRepository voteRepository, RsService rsService, UserService userService) {
+        this.userController = userController;
+        this.userRepository = userRepository;
+        this.rsEventRepository = rsEventRepository;
+        this.voteRepository = voteRepository;
+        this.rsService = rsService;
+        this.userService = userService;
+    }
 
     private List<RsEvent> rsList = getRsList();
 
@@ -42,11 +57,7 @@ public class RsController {
 
     @GetMapping("/rsEvent/{id}")
     public ResponseEntity<RsEvent> getRsEvent(@PathVariable int id) throws InvalidIndexException {
-        Optional<RsEventEntity> result = rsEventRepository.findById(id);
-        if (!result.isPresent()){
-            throw new InvalidIndexException();
-        }
-        RsEventEntity re = result.get();
+        RsEventEntity re = rsService.getRsEvent(id);
         RsEvent rsEvent = RsEvent.builder()
                 .eventName(re.getEventName())
                 .keyWord(re.getKeyword())
@@ -99,22 +110,18 @@ public class RsController {
     @PatchMapping("/rsEvent/{rsEventId}")
     public ResponseEntity<RsEvent> patchEvent(@Valid @RequestBody RsEvent rsEvent, @PathVariable Integer rsEventId) {
         Integer userId = rsEvent.getUserId();
-        UserEntity userEntity = userRepository.getById(userId);
-        if (userEntity==null){
-            //说明userid和rsevent不匹配
+        boolean isPresentUser = userService.findById(userId);
+        if (!isPresentUser){
             return ResponseEntity.status(400).build();
         }
 
-        RsEventEntity rsEventById = rsEventRepository.getById(rsEventId);
-        //匹配上了
-        if (rsEvent.getEventName()!=null){
-            rsEventById.setEventName(rsEvent.getEventName());
-        }
-        if (rsEvent.getKeyWord()!=null){
-            rsEventById.setKeyword(rsEvent.getKeyWord());
-        }
-        rsEventRepository.save(rsEventById);
-        return ResponseEntity.ok(rsEvent);
+        RsEventEntity re = rsService.patchEvent(rsEvent, rsEventId);
+        RsEvent rsEvent1 = rsEvent.builder()
+                .userId(re.getId())
+                .keyWord(re.getKeyword())
+                .eventName(re.getEventName())
+                .build();
+        return ResponseEntity.ok(rsEvent1);
     }
 
     @Transactional

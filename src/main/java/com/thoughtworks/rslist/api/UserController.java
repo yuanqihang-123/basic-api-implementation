@@ -19,8 +19,12 @@ import java.util.List;
 public class UserController {
     private List<User> userList = InitUserList();
 
-    @Autowired
-    UserRepository userRepository;
+//    @Autowired
+    private final UserRepository userRepository;
+
+    public UserController(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
     private List<User> InitUserList() {
         ArrayList<User> Users = new ArrayList<>();

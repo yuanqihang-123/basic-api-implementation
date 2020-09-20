@@ -21,14 +21,21 @@ import java.util.stream.Collectors;
 
 @RestController
 public class VoteController {
-    @Autowired
-    UserController userController;
-    @Autowired
-    UserRepository userRepository;
-    @Autowired
-    RsEventRepository rsEventRepository;
-    @Autowired
-    VoteRepository voteRepository;
+//    @Autowired
+    private final UserController userController;
+//    @Autowired
+    private final UserRepository userRepository;
+//    @Autowired
+    private final RsEventRepository rsEventRepository;
+//    @Autowired
+    private final VoteRepository voteRepository;
+
+    public VoteController(UserController userController, UserRepository userRepository, RsEventRepository rsEventRepository, VoteRepository voteRepository) {
+        this.userController = userController;
+        this.userRepository = userRepository;
+        this.rsEventRepository = rsEventRepository;
+        this.voteRepository = voteRepository;
+    }
 
     @GetMapping("/votes")
     public ResponseEntity<List<Vote>> getVotesInTimeRange(@RequestParam String startTime, @RequestParam String endTime) throws ParseException {

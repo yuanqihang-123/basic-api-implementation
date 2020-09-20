@@ -40,6 +40,7 @@ public class VoteControllerTest {
     @Autowired
     RsEventRepository rsEventRepository;
 
+
     @Test
     void voteToRsEventWhileVoteNumLessThanUserVoteNumTest() throws Exception {
         ObjectMapper objectMapper = new ObjectMapper();
